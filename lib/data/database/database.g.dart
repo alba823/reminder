@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `events` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `timeStamp` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `events` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `timeStamp` INTEGER NOT NULL, `date` TEXT NOT NULL)');
         await database.execute(
             'CREATE UNIQUE INDEX `index_events_id` ON `events` (`id`)');
 
@@ -113,7 +113,8 @@ class _$EventDao extends EventDao {
                   'id': item.id,
                   'name': item.name,
                   'isChecked': item.isChecked ? 1 : 0,
-                  'timeStamp': _dateTimeConverter.encode(item.timeStamp)
+                  'timeStamp': _dateTimeConverter.encode(item.timeStamp),
+                  'date': item.date
                 },
             changeListener),
         _eventUpdateAdapter = UpdateAdapter(
@@ -124,7 +125,8 @@ class _$EventDao extends EventDao {
                   'id': item.id,
                   'name': item.name,
                   'isChecked': item.isChecked ? 1 : 0,
-                  'timeStamp': _dateTimeConverter.encode(item.timeStamp)
+                  'timeStamp': _dateTimeConverter.encode(item.timeStamp),
+                  'date': item.date
                 },
             changeListener),
         _eventDeletionAdapter = DeletionAdapter(
@@ -135,7 +137,8 @@ class _$EventDao extends EventDao {
                   'id': item.id,
                   'name': item.name,
                   'isChecked': item.isChecked ? 1 : 0,
-                  'timeStamp': _dateTimeConverter.encode(item.timeStamp)
+                  'timeStamp': _dateTimeConverter.encode(item.timeStamp),
+                  'date': item.date
                 },
             changeListener);
 
@@ -152,26 +155,39 @@ class _$EventDao extends EventDao {
   final DeletionAdapter<Event> _eventDeletionAdapter;
 
   @override
-  Stream<List<Event>> getEvents() {
+  Stream<List<Event>> getAllEventsStream() {
     return _queryAdapter.queryListStream('SELECT * FROM events',
         mapper: (Map<String, Object?> row) => Event(
             row['id'] as int?,
             row['name'] as String,
             (row['isChecked'] as int) != 0,
-            _dateTimeConverter.decode(row['timeStamp'] as int)),
+            _dateTimeConverter.decode(row['timeStamp'] as int),
+            row['date'] as String),
         queryableName: 'events',
         isView: false);
   }
 
   @override
-  Future<List<Event>?> getEventsByDateTime(DateTime dateTime) async {
-    return _queryAdapter.queryList('SELECT * FROM events WHERE dateTime == ?1',
+  Future<List<Event>> getAllEvents() async {
+    return _queryAdapter.queryList('SELECT * FROM events',
         mapper: (Map<String, Object?> row) => Event(
             row['id'] as int?,
             row['name'] as String,
             (row['isChecked'] as int) != 0,
-            _dateTimeConverter.decode(row['timeStamp'] as int)),
-        arguments: [_dateTimeConverter.encode(dateTime)]);
+            _dateTimeConverter.decode(row['timeStamp'] as int),
+            row['date'] as String));
+  }
+
+  @override
+  Future<List<Event>> getEventsByDateTime(String dateTime) async {
+    return _queryAdapter.queryList('SELECT * FROM events WHERE date == ?1',
+        mapper: (Map<String, Object?> row) => Event(
+            row['id'] as int?,
+            row['name'] as String,
+            (row['isChecked'] as int) != 0,
+            _dateTimeConverter.decode(row['timeStamp'] as int),
+            row['date'] as String),
+        arguments: [dateTime]);
   }
 
   @override

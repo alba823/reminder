@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reminder/bloc/events/events_cubit.dart';
+import 'package:reminder/bloc/calendar/calendar_bloc.dart';
+import 'package:reminder/bloc/events_v1/events_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/utils/theme_values.dart';
 
@@ -9,47 +10,46 @@ class EventsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventsCubit = BlocProvider.of<EventsCubit>(context);
-
-    return StreamBuilder(
-        stream: eventsCubit.eventsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final items = snapshot.data!;
-            return ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  return Dismissible(
-                      key: Key(item.id.toString()),
-                      direction: DismissDirection.startToEnd,
-                      onDismissed: (_) {
-                        eventsCubit.deleteEvent(event: item);
+    return BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
+      final items = state.getEventsForDate();
+      return ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final event = items[index];
+            return Dismissible(
+                key: Key(event.id.toString()),
+                direction: DismissDirection.startToEnd,
+                onDismissed: (_) {
+                  BlocProvider.of<EventsBloc>(context)
+                      .add(DeleteEvent(event, () {
+                    BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
+                  }));
+                },
+                background: Container(
+                    alignment: Alignment.centerLeft,
+                    color: Colors.redAccent,
+                    child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24),
+                        child: Icon(Icons.delete))),
+                secondaryBackground: Container(color: Colors.greenAccent),
+                child: Column(
+                  children: [
+                    EventWidget(
+                      name: event.name,
+                      isChecked: event.isChecked,
+                      onChecked: (isChecked) {
+                        BlocProvider.of<EventsBloc>(context)
+                            .add(CheckEvent(event, isChecked, () {
+                          BlocProvider.of<CalendarBloc>(context)
+                              .add(OnUpdate());
+                        }));
                       },
-                      background: Container(
-                          alignment: Alignment.centerLeft,
-                          color: Colors.redAccent,
-                          child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 24),
-                              child: Icon(Icons.delete))),
-                      secondaryBackground: Container(color: Colors.greenAccent),
-                      child: Column(
-                        children: [
-                          EventWidget(
-                            name: item.name,
-                            isChecked: item.isChecked,
-                            onChecked: (isChecked) {
-                              eventsCubit.checkEvent(item, isChecked);
-                            },
-                          ),
-                          if (index != items.length - 1) const Divider()
-                        ],
-                      ));
-                });
-          } else {
-            return const Text("Empty");
-          }
-        });
+                    ),
+                    if (index != items.length - 1) const Divider()
+                  ],
+                ));
+          });
+    });
   }
 }
 

@@ -1,7 +1,7 @@
 import 'package:localstorage/localstorage.dart';
-import 'package:reminder/data/database/database.dart';
 import 'package:reminder/data/database/event.dart';
 import 'package:reminder/data/database/event_dao.dart';
+import 'package:reminder/utils/date_time_extensions.dart';
 
 abstract class Repository {
   bool isDarkTheme();
@@ -10,9 +10,13 @@ abstract class Repository {
 
   Future<void> prepare();
 
-  Stream<List<Event>> getEvents();
+  Future<List<Event>> getAllEvents();
+
+  Future<List<Event>> getEventsByDateTime({required DateTime dateTime});
 
   Future<void> saveEvents({required List<Event> events});
+
+  Future<void> addEvent({required Event event});
 
   Future<void> updateEvent({required Event event});
 
@@ -45,8 +49,8 @@ final class RepositoryImpl implements Repository {
   }
 
   @override
-  Stream<List<Event>> getEvents() {
-    return eventDao.getEvents();
+  Stream<List<Event>> getAllEventsStream() {
+    return eventDao.getAllEventsStream();
   }
 
   @override
@@ -69,7 +73,20 @@ final class RepositoryImpl implements Repository {
     await eventDao.deleteEvent(event);
   }
 
+  @override
+  Future<List<Event>> getEventsByDateTime({required DateTime dateTime}) {
+    return eventDao.getEventsByDateTime(dateTime.convertToYearDay());
+  }
 
+  @override
+  Future<List<Event>> getAllEvents() {
+    return eventDao.getAllEvents();
+  }
+
+  @override
+  Future<void> addEvent({required Event event}) {
+    return eventDao.insertEvent(event);
+  }
 }
 
 const isDarkThemeStorageKey = "isDarkTheme";

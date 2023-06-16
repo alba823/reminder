@@ -1,18 +1,17 @@
 part of 'calendar_bloc.dart';
 
-abstract class CalendarEvent {
-  abstract final DateTime selectedDay;
-}
+abstract class CalendarEvent {}
 
 class OnDayClicked extends CalendarEvent {
-  @override
   final DateTime selectedDay;
 
   OnDayClicked(this.selectedDay);
 }
 class OnDayLongClicked extends CalendarEvent {
-  @override
   final DateTime selectedDay;
+  final VoidCallback onDayAdded;
 
-  OnDayLongClicked(this.selectedDay);
+  OnDayLongClicked(this.selectedDay, this.onDayAdded);
 }
+
+class OnUpdate extends CalendarEvent {}

@@ -4,10 +4,13 @@ import 'package:reminder/data/database/event.dart';
 @dao
 abstract class EventDao {
   @Query("SELECT * FROM events")
-  Stream<List<Event>> getEvents();
+  Stream<List<Event>> getAllEventsStream();
 
-  @Query("SELECT * FROM events WHERE dateTime == :dateTime")
-  Future<List<Event>?> getEventsByDateTime(DateTime dateTime);
+  @Query("SELECT * FROM events")
+  Future<List<Event>> getAllEvents();
+
+  @Query("SELECT * FROM events WHERE date == :dateTime")
+  Future<List<Event>> getEventsByDateTime(String dateTime);
 
   @Update(onConflict: OnConflictStrategy.replace)
   Future<void> updateEvent(Event event);
