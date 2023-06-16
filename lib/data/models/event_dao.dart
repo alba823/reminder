@@ -4,9 +4,6 @@ import 'package:reminder/data/models/event.dart';
 @dao
 abstract class EventDao {
   @Query("SELECT * FROM events")
-  Stream<List<Event>> getAllEventsStream();
-
-  @Query("SELECT * FROM events")
   Future<List<Event>> getAllEvents();
 
   @Query("SELECT * FROM events WHERE date == :dateTime")

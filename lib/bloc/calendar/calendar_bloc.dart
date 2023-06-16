@@ -2,10 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:reminder/data/models/event.dart';
 import 'package:reminder/data/repo/repository.dart';
-import 'package:reminder/utils/date_time_extensions.dart';
+import 'package:reminder/utils/extensions/date_time_extensions.dart';
 
 part 'calendar_event.dart';
-
 part 'calendar_state.dart';
 
 class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {

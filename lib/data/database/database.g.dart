@@ -105,7 +105,7 @@ class _$EventDao extends EventDao {
   _$EventDao(
     this.database,
     this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database, changeListener),
+  )   : _queryAdapter = QueryAdapter(database),
         _eventInsertionAdapter = InsertionAdapter(
             database,
             'events',
@@ -115,8 +115,7 @@ class _$EventDao extends EventDao {
                   'isChecked': item.isChecked ? 1 : 0,
                   'timeStamp': _dateTimeConverter.encode(item.timeStamp),
                   'date': item.date
-                },
-            changeListener),
+                }),
         _eventUpdateAdapter = UpdateAdapter(
             database,
             'events',
@@ -127,8 +126,7 @@ class _$EventDao extends EventDao {
                   'isChecked': item.isChecked ? 1 : 0,
                   'timeStamp': _dateTimeConverter.encode(item.timeStamp),
                   'date': item.date
-                },
-            changeListener),
+                }),
         _eventDeletionAdapter = DeletionAdapter(
             database,
             'events',
@@ -139,8 +137,7 @@ class _$EventDao extends EventDao {
                   'isChecked': item.isChecked ? 1 : 0,
                   'timeStamp': _dateTimeConverter.encode(item.timeStamp),
                   'date': item.date
-                },
-            changeListener);
+                });
 
   final sqflite.DatabaseExecutor database;
 
@@ -153,19 +150,6 @@ class _$EventDao extends EventDao {
   final UpdateAdapter<Event> _eventUpdateAdapter;
 
   final DeletionAdapter<Event> _eventDeletionAdapter;
-
-  @override
-  Stream<List<Event>> getAllEventsStream() {
-    return _queryAdapter.queryListStream('SELECT * FROM events',
-        mapper: (Map<String, Object?> row) => Event(
-            row['id'] as int?,
-            row['name'] as String,
-            (row['isChecked'] as int) != 0,
-            _dateTimeConverter.decode(row['timeStamp'] as int),
-            row['date'] as String),
-        queryableName: 'events',
-        isView: false);
-  }
 
   @override
   Future<List<Event>> getAllEvents() async {

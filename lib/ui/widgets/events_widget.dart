@@ -3,10 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
 import 'package:reminder/bloc/events_v1/events_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
-import 'package:reminder/utils/theme_values.dart';
+import 'package:reminder/ui/screens/add_event_bottom_sheet.dart';
+import 'package:reminder/ui/widgets/general/customized_outlined_button.dart';
+import 'package:reminder/utils/values/theme_values.dart';
 
 class EventsWidget extends StatelessWidget {
-  const EventsWidget({super.key});
+  const EventsWidget({super.key, required this.buttonBackgroundColor});
+
+  final Color buttonBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -16,25 +20,35 @@ class EventsWidget extends StatelessWidget {
           itemCount: items.length,
           itemBuilder: (context, index) {
             final event = items[index];
-            return Dismissible(
-                key: Key(event.id.toString()),
-                direction: DismissDirection.startToEnd,
-                onDismissed: (_) {
-                  BlocProvider.of<EventsBloc>(context)
-                      .add(DeleteEvent(event, () {
-                    BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
-                  }));
-                },
-                background: Container(
-                    alignment: Alignment.centerLeft,
-                    color: Colors.redAccent,
-                    child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24),
-                        child: Icon(Icons.delete))),
-                secondaryBackground: Container(color: Colors.greenAccent),
-                child: Column(
-                  children: [
-                    EventWidget(
+            return Column(
+              children: [
+                Dismissible(
+                    key: Key(event.id.toString()),
+                    onDismissed: (_) {
+                      BlocProvider.of<EventsBloc>(context)
+                          .add(DeleteEvent(event, () {
+                        BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
+                      }));
+                    },
+                    dismissThresholds: const {
+                      DismissDirection.startToEnd: 0.6,
+                      DismissDirection.endToStart: 0.2,
+                    },
+                    confirmDismiss: (direction) async =>
+                        direction == DismissDirection.startToEnd,
+                    background: Container(
+                        alignment: Alignment.centerLeft,
+                        color: Colors.redAccent,
+                        child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 24),
+                            child: Icon(Icons.delete))),
+                    secondaryBackground: Container(
+                        alignment: Alignment.centerRight,
+                        color: Colors.greenAccent,
+                        child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 24),
+                            child: Icon(Icons.edit))),
+                    child: EventWidget(
                       name: event.name,
                       isChecked: event.isChecked,
                       onChecked: (isChecked) {
@@ -44,12 +58,28 @@ class EventsWidget extends StatelessWidget {
                               .add(OnUpdate());
                         }));
                       },
-                    ),
-                    if (index != items.length - 1) const Divider()
-                  ],
-                ));
+                    )),
+                if (index != items.length - 1)
+                  const Divider(
+                    height: 0.1,
+                  )
+                else _getAddEventButton(context)
+              ],
+            );
           });
     });
+  }
+
+  Widget _getAddEventButton(BuildContext context) {
+    return CustomizedOutlinedButton(
+        onPressed: () => showModalBottomSheet<dynamic>(
+            context: context,
+            isScrollControlled: true,
+            builder: (context) {
+              return const AddEventBottomSheet();
+            }),
+        buttonBackgroundColor: buttonBackgroundColor,
+        icon: Icons.add);
   }
 }
 
@@ -67,7 +97,7 @@ class EventWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.only(left: 24, right: 12, top: 8, bottom: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

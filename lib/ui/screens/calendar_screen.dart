@@ -9,12 +9,12 @@ class CalendarScreen extends StatelessWidget {
   const CalendarScreen(
       {super.key,
       required this.textColor,
-      required this.floatingButtonBackgroundColor,
+      required this.buttonBackgroundColor,
       required this.backgroundColor,
       required this.icon});
 
   final Color textColor;
-  final Color floatingButtonBackgroundColor;
+  final Color buttonBackgroundColor;
 
   final Color backgroundColor;
   final IconData icon;
@@ -26,21 +26,11 @@ class CalendarScreen extends StatelessWidget {
           BlocProvider.of<ThemeCubit>(context).switchTheme();
           BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
         }),
-        floatingActionButton: _getFloatingButton(
-            iconColor: textColor,
-            backgroundColor: floatingButtonBackgroundColor,
-            onPressed: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (_) {
-                    return Container(height: 200, color: Colors.greenAccent);
-                  });
-            }),
-        body: const Column(
+        body: Column(
           children: <Widget>[
-            CalendarWidget(),
-            Padding(padding: EdgeInsets.only(top: 8), child: Divider()),
-            Expanded(child: EventsWidget()),
+            const CalendarWidget(),
+            const Padding(padding: EdgeInsets.only(top: 8), child: Divider(height: 0.1)),
+            Expanded(child: EventsWidget(buttonBackgroundColor: buttonBackgroundColor)),
           ],
         ));
   }
@@ -65,19 +55,5 @@ class CalendarScreen extends StatelessWidget {
         child: Divider(height: 1, color: textColor),
       ),
     );
-  }
-
-  Widget _getFloatingButton(
-      {required Color iconColor,
-      required Color backgroundColor,
-      required VoidCallback onPressed}) {
-    return FloatingActionButton(
-        onPressed: onPressed,
-        backgroundColor: backgroundColor,
-        mini: true,
-        child: Icon(
-          Icons.add,
-          color: iconColor,
-        ));
   }
 }

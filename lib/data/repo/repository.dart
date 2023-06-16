@@ -1,6 +1,6 @@
 import 'package:reminder/data/models/event.dart';
 import 'package:reminder/data/models/event_dao.dart';
-import 'package:reminder/utils/date_time_extensions.dart';
+import 'package:reminder/utils/extensions/date_time_extensions.dart';
 
 abstract class Repository {
   Future<List<Event>> getAllEvents();

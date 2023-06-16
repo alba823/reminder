@@ -1,5 +1,5 @@
 import 'package:floor/floor.dart';
-import 'package:reminder/utils/date_time_extensions.dart';
+import 'package:reminder/utils/extensions/date_time_extensions.dart';
 
 @Entity(tableName: "events", indices: [
   Index(value: ['id'], unique: true)
@@ -41,6 +41,6 @@ class Event {
 
   @override
   String toString() {
-    return "Event(id: $id, name: $name, isCheked: $isChecked, timeStamp: $timeStamp)";
+    return "Event(id: $id, name: $name, isChecked: $isChecked, timeStamp: $timeStamp, date: $date)";
   }
 }
