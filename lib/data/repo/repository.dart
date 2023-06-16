@@ -1,15 +1,8 @@
-import 'package:localstorage/localstorage.dart';
-import 'package:reminder/data/database/event.dart';
-import 'package:reminder/data/database/event_dao.dart';
+import 'package:reminder/data/models/event.dart';
+import 'package:reminder/data/models/event_dao.dart';
 import 'package:reminder/utils/date_time_extensions.dart';
 
 abstract class Repository {
-  bool isDarkTheme();
-
-  Future<void> changeTheme();
-
-  Future<void> prepare();
-
   Future<List<Event>> getAllEvents();
 
   Future<List<Event>> getEventsByDateTime({required DateTime dateTime});
@@ -26,32 +19,9 @@ abstract class Repository {
 }
 
 final class RepositoryImpl implements Repository {
-  RepositoryImpl(this.eventDao, {LocalStorage? localStorage})
-      : localStorage = localStorage ?? LocalStorage(localStorageKey);
+  RepositoryImpl(this.eventDao);
 
-  final LocalStorage localStorage;
   final EventDao eventDao;
-
-  @override
-  Future<void> prepare() async {
-    await localStorage.ready;
-  }
-
-  @override
-  Future<void> changeTheme() async {
-    final isCurrentThemeDark = isDarkTheme();
-    await localStorage.setItem(isDarkThemeStorageKey, !isCurrentThemeDark);
-  }
-
-  @override
-  bool isDarkTheme() {
-    return localStorage.getItem(isDarkThemeStorageKey) ?? true;
-  }
-
-  @override
-  Stream<List<Event>> getAllEventsStream() {
-    return eventDao.getAllEventsStream();
-  }
 
   @override
   Future<void> saveEvents({required List<Event> events}) async {
@@ -88,7 +58,3 @@ final class RepositoryImpl implements Repository {
     return eventDao.insertEvent(event);
   }
 }
-
-const isDarkThemeStorageKey = "isDarkTheme";
-const localStorageKey = "localStorageKey";
-const eventsKey = "eventsKey";

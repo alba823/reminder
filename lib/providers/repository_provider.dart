@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reminder/data/database/event_dao.dart';
+import 'package:reminder/data/local_storage/local_storage_service.dart';
+import 'package:reminder/data/models/event_dao.dart';
 import 'package:reminder/data/repo/repository.dart';
 import 'package:reminder/providers/blocs_provider.dart';
 
@@ -11,8 +12,9 @@ class RepositoryProviderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider<Repository>(
-        create: (_) => RepositoryImpl(eventDao),
-        child: const BlocsProviderWidget());
+    return MultiRepositoryProvider(providers: [
+      RepositoryProvider<Repository>(create: (_) => RepositoryImpl(eventDao)),
+      RepositoryProvider<LocalStorageService>(create: (_) => LocalStorageServiceImpl())
+    ], child: const BlocsProviderWidget());
   }
 }

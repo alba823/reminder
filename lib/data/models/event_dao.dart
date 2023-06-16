@@ -1,5 +1,5 @@
 import 'package:floor/floor.dart';
-import 'package:reminder/data/database/event.dart';
+import 'package:reminder/data/models/event.dart';
 
 @dao
 abstract class EventDao {

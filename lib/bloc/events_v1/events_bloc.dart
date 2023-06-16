@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:reminder/data/database/event.dart';
+import 'package:reminder/data/models/event.dart';
 import 'package:reminder/data/repo/repository.dart';
 import 'package:reminder/utils/date_time_extensions.dart';
 

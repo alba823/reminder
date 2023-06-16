@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
 import 'package:reminder/bloc/events_v1/events_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
-import 'package:reminder/data/database/event.dart';
+import 'package:reminder/data/models/event.dart';
 import 'package:reminder/utils/calendar_values.dart';
 import 'package:reminder/utils/date_time_extensions.dart';
 import 'package:reminder/utils/theme_values.dart';

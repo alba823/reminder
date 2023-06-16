@@ -3,9 +3,9 @@
 import 'dart:async';
 
 import 'package:floor/floor.dart';
-import 'package:reminder/data/database/datetime_converter.dart';
-import 'package:reminder/data/database/event_dao.dart';
-import 'package:reminder/data/database/event.dart';
+import 'package:reminder/data/converters/datetime_converter.dart';
+import 'package:reminder/data/models/event.dart';
+import 'package:reminder/data/models/event_dao.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 part 'database.g.dart';
