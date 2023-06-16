@@ -14,13 +14,11 @@ class CalendarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeCubit = BlocProvider.of<ThemeCubit>(context);
-
-    final themeColor =
-        themeCubit.isDarkTheme() ? lightThemeColor : darkThemeColor;
-
     return BlocBuilder<CalendarBloc, CalendarState>(
         builder: (buildContext, state) {
+      final todayColor = BlocProvider.of<ThemeCubit>(context).isDarkTheme()
+          ? lightThemeColor
+          : darkThemeColor;
       return TableCalendar<Event>(
         focusedDay: state.selectedDay,
         firstDay: kFirstDay,
@@ -29,11 +27,9 @@ class CalendarWidget extends StatelessWidget {
         availableCalendarFormats: const {CalendarFormat.month: ''},
         calendarStyle: CalendarStyle(
             markersAlignment: Alignment.topRight,
-            markerDecoration:
-                BoxDecoration(color: themeColor, shape: BoxShape.circle),
             todayDecoration: BoxDecoration(
-                border: Border.all(color: themeColor), shape: BoxShape.circle),
-            todayTextStyle: TextStyle(color: themeColor)),
+                border: Border.all(color: todayColor), shape: BoxShape.circle),
+            todayTextStyle: TextStyle(color: todayColor)),
         startingDayOfWeek: StartingDayOfWeek.monday,
         calendarBuilders: CalendarBuilders(markerBuilder: _getMarkerBuilder),
         eventLoader: (dateTime) => BlocProvider.of<EventsBloc>(buildContext)
@@ -52,8 +48,8 @@ class CalendarWidget extends StatelessWidget {
               .add(OnDayLongClicked(dateTime, () {
             BlocProvider.of<EventsBloc>(context)
                 .add(GetAllEvents(onCompleted: () {
-                  BlocProvider.of<EventsBloc>(context)
-                      .add(GetEventsForDate(dateTime));
+              BlocProvider.of<EventsBloc>(context)
+                  .add(GetEventsForDate(dateTime));
             }));
           }));
         },
@@ -75,6 +71,9 @@ class CalendarWidget extends StatelessWidget {
                 ? Colors.green
                 : Colors.redAccent,
             shape: BoxShape.circle),
-        child: Text(events.length.toString()),
+        child: Text(
+          events.length.toString(),
+          style: const TextStyle(color: Colors.white),
+        ),
       );
 }

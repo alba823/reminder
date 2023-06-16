@@ -29,7 +29,7 @@ class BlocsProviderWidget extends StatelessWidget {
             ..add(GetAllEvents(onCompleted: () {
               BlocProvider.of<CalendarBloc>(buildContext).add(OnUpdate());
             })),
-          child: const MainThemeScreen(),
+          child: const MainScreen(),
         ));
   }
 }
