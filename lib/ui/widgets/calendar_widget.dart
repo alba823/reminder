@@ -47,7 +47,7 @@ class CalendarWidget extends StatelessWidget {
         eventLoader: (dateTime) =>
             eventBloc.state.getEventsForDate(dateTime: dateTime),
         selectedDayPredicate: (d) =>
-            d.convertToYearDay() == state.selectedDay.convertToYearDay(),
+            d.toYearDay() == state.selectedDay.toYearDay(),
         onDaySelected: (dateTime, _) {
           calendarBloc.add(OnDayClicked(dateTime));
           eventBloc.add(GetEventsForDate(dateTime));

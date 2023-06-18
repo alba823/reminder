@@ -24,7 +24,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       OnDayLongClicked event, Emitter<CalendarState> emitter) async {
     await repository.addEvent(
         event: Event.optional(
-            name: "Added Event: ${event.selectedDay.convertToYearDay()}",
+            name: "Added Event: ${event.selectedDay.toYearDay()}",
             timeStamp: event.selectedDay));
     _onUpdate(null, emitter, selectedDay: event.selectedDay);
     event.onDayAdded();

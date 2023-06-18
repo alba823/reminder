@@ -45,7 +45,7 @@ final class RepositoryImpl implements Repository {
 
   @override
   Future<List<Event>> getEventsByDateTime({required DateTime dateTime}) {
-    return eventDao.getEventsByDateTime(dateTime.convertToYearDay());
+    return eventDao.getEventsByDateTime(dateTime.toYearDay());
   }
 
   @override

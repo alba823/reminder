@@ -43,7 +43,7 @@ class EventsLoaded extends EventsState {
   @override
   List<Event> getEventsForDate({DateTime? dateTime}) => events
       .where((e) => dateTime == null
-          ? e.date == currentDateTime.convertToYearDay()
-          : e.date == dateTime.convertToYearDay())
+          ? e.date == currentDateTime.toYearDay()
+          : e.date == dateTime.toYearDay())
       .toList();
 }

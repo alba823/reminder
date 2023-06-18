@@ -26,8 +26,8 @@ class Event {
           isChecked ?? false,
           timeStamp ?? DateTime.now(),
           date ??
-              timeStamp?.convertToYearDay() ??
-              DateTime.now().convertToYearDay());
+              timeStamp?.toYearDay() ??
+              DateTime.now().toYearDay());
 
   Event copyWith(
       {String? name, bool? isChecked, DateTime? timeStamp, String? date}) {
