@@ -8,3 +8,10 @@ extension DateTimeExtension on DateTime {
   String get monthDateYearString => toString().split(" ").first;
   String get timeString => toString().split(" ").last;
 }
+
+DateTime getCombinedDate({DateTime? dateWithYear, DateTime? dateWithTime}) {
+  final year = dateWithYear?.monthDateYearString ?? DateTime.now().monthDateYearString;
+  final time = dateWithTime?.timeString ?? DateTime.now().timeString;
+
+  return DateTime.parse("$year $time");
+}

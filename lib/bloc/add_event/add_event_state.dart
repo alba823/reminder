@@ -5,12 +5,17 @@ enum ValidationState { success, idle, empty }
 final class AddEventState {
   final Event event;
   final ValidationState validationState;
+  final bool shouldSetNotification;
 
   DateTime get dateTime => event.timeStamp;
 
   String get name => event.name;
 
-  AddEventState({Event? event, ValidationState? validationState})
+  AddEventState(
+      {Event? event,
+      ValidationState? validationState,
+      bool? shouldSetNotification})
       : event = event ?? Event.optional(name: ""),
-        validationState = validationState ?? ValidationState.idle;
+        validationState = validationState ?? ValidationState.idle,
+        shouldSetNotification = shouldSetNotification ?? false;
 }

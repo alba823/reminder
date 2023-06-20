@@ -43,6 +43,7 @@ dependencies:
   floor: ^1.4.2
   intl: ^0.18.1
   bloc: ^8.1.2
+  flutter_local_notifications: ^14.1.1
 
 dev_dependencies:
   floor_generator: ^1.4.2

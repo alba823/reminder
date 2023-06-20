@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/add_event/add_event_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
 import 'package:reminder/bloc/events_v1/events_bloc.dart';
-import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/data/models/event.dart';
 import 'package:reminder/ui/screens/add_event_bottom_sheet.dart';
+import 'package:reminder/ui/widgets/general/customized_checkbox.dart';
 import 'package:reminder/ui/widgets/general/customized_outlined_button.dart';
-import 'package:reminder/utils/values/theme_values.dart';
+import 'package:reminder/utils/extensions/date_time_extensions.dart';
 
 class EventsWidget extends StatelessWidget {
   const EventsWidget({super.key, required this.buttonBackgroundColor});
@@ -88,11 +88,12 @@ class EventsWidget extends StatelessWidget {
                   create: (_) => AddEventBloc(
                       event: Event.optional(
                           name: "",
-                          timeStamp: BlocProvider.of<CalendarBloc>(context)
-                              .state
-                              .selectedDay
-                      )
-                  ),
+                          timeStamp: getCombinedDate(
+                              dateWithYear:
+                                  BlocProvider.of<CalendarBloc>(context)
+                                      .state
+                                      .selectedDay,
+                              dateWithTime: DateTime.now()))),
                   child: const AddEventBottomSheet());
             }),
         buttonBackgroundColor: buttonBackgroundColor,
@@ -119,22 +120,12 @@ class EventWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(name),
-          Checkbox(
-            value: isChecked,
-            onChanged: (v) => onChecked(v ?? false),
-            shape: const CircleBorder(),
-            checkColor: _getCheckColor(context),
+          CustomizedCheckBox(
+            isChecked: isChecked,
+            onChecked: (updatedValue) => onChecked(updatedValue),
           )
         ],
       ),
     );
-  }
-
-  Color _getCheckColor(BuildContext context) {
-    if (context.watch<ThemeCubit>().isDarkTheme()) {
-      return darkThemeColor;
-    } else {
-      return lightThemeColor;
-    }
   }
 }

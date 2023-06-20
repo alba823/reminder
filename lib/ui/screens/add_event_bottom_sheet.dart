@@ -4,6 +4,7 @@ import 'package:reminder/bloc/add_event/add_event_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
 import 'package:reminder/bloc/events_v1/events_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
+import 'package:reminder/ui/widgets/general/customized_checkbox.dart';
 import 'package:reminder/ui/widgets/general/customized_outlined_button.dart';
 import 'package:reminder/utils/extensions/date_time_extensions.dart';
 import 'package:reminder/utils/values/theme_values.dart';
@@ -28,45 +29,65 @@ class AddEventBottomSheet extends StatelessWidget {
         alignment: WrapAlignment.center,
         children: [
           Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.only(
+                  top: 24, bottom: MediaQuery.of(context).viewInsets.bottom),
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment,
                 children: [
-                  TextFormField(
-                    initialValue: state.name.isEmpty ? null : state.name,
-                    decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        hintText: "Enter event name"),
-                    onChanged: (newName) {
-                      BlocProvider.of<AddEventBloc>(context)
-                          .add(NameChangedEvent(newName));
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24, right: 24),
+                    child: TextFormField(
+                      initialValue: state.name.isEmpty ? null : state.name,
+                      scrollPadding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          hintText: "Enter event name"),
+                      onChanged: (newName) {
+                        BlocProvider.of<AddEventBloc>(context)
+                            .add(NameChangedEvent(newName));
+                      },
+                    ),
                   ),
                   SizedBox(height: spacerHeight),
-                  _getRowItem(
-                      hint: "Date",
-                      value: state.dateTime.toMonthDayYear(),
-                      onPressed: () {
-                        _showDateTimePicker(
-                            context,
-                            CupertinoDatePickerMode.date,
-                            state.dateTime, (newDateTime) {
-                          BlocProvider.of<AddEventBloc>(context)
-                              .add(DateChangedEvent(newDateTime));
-                        });
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24, right: 24),
+                    child: _getRowItem(
+                        hint: "Date",
+                        value: state.dateTime.toMonthDayYear(),
+                        onPressed: () {
+                          _showDateTimePicker(
+                              context,
+                              CupertinoDatePickerMode.date,
+                              state.dateTime, (newDateTime) {
+                            BlocProvider.of<AddEventBloc>(context)
+                                .add(DateChangedEvent(newDateTime));
+                          });
+                        }),
+                  ),
+                  SizedBox(height: spacerHeight),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24, right: 24),
+                    child: _getRowItem(
+                      hint: "Time",
+                      value: state.dateTime.toTime(),
+                      onPressed: () => _showDateTimePicker(
+                          context, CupertinoDatePickerMode.time, state.dateTime,
+                          (newDateTime) {
+                        BlocProvider.of<AddEventBloc>(context)
+                            .add(TimeChangedEvent(newDateTime));
                       }),
-                  SizedBox(height: spacerHeight),
-                  _getRowItem(
-                    hint: "Time",
-                    value: state.dateTime.toTime(),
-                    onPressed: () => _showDateTimePicker(
-                        context, CupertinoDatePickerMode.time, state.dateTime,
-                        (newDateTime) {
-                      BlocProvider.of<AddEventBloc>(context)
-                          .add(TimeChangedEvent(newDateTime));
-                    }),
+                    ),
                   ),
                   SizedBox(height: spacerHeight),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24, right: 12),
+                    child: _getCheckBoxRowItem(
+                        hint: "Set reminder",
+                        value: state.shouldSetNotification,
+                        onPressed: (newValue) =>
+                            BlocProvider.of<AddEventBloc>(context).add(
+                                ShouldShowNotificationChangedEvent(newValue))),
+                  ),
                   CustomizedOutlinedButton(
                     onPressed: () =>
                         BlocProvider.of<AddEventBloc>(context).add(SaveEvent()),
@@ -111,5 +132,15 @@ class AddEventBottomSheet extends StatelessWidget {
           Text(hint, style: const TextStyle(fontSize: 16)),
           Text(value, style: const TextStyle(fontSize: 16))
         ]));
+  }
+
+  Widget _getCheckBoxRowItem(
+      {required String hint,
+      required bool value,
+      required Function(bool) onPressed}) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text(hint, style: const TextStyle(fontSize: 16)),
+      CustomizedCheckBox(isChecked: value, onChecked: (newValue) => onPressed(newValue))
+    ]);
   }
 }

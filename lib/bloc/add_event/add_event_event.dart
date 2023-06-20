@@ -20,4 +20,9 @@ final class NameChangedEvent extends AddEventEvent {
   NameChangedEvent(this.name);
 }
 
+final class ShouldShowNotificationChangedEvent extends AddEventEvent {
+  final bool newValue;
+
+  ShouldShowNotificationChangedEvent(this.newValue);
+}
 final class SaveEvent extends AddEventEvent {}

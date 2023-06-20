@@ -6,8 +6,7 @@ import 'providers/providers.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final database =
-      await $FloorAppDatabase.databaseBuilder('flutter_database.db').build();
+  final database = await $FloorAppDatabase.databaseBuilder('flutter_database.db').build();
 
   runApp(MyApp(database: database));
 }

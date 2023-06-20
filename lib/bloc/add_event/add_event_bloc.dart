@@ -11,18 +11,17 @@ class AddEventBloc extends Bloc<AddEventEvent, AddEventState> {
     on<DateChangedEvent>(_onDateChanged);
     on<TimeChangedEvent>(_onTimeChanged);
     on<NameChangedEvent>(_onNameChangedEvent);
+    on<ShouldShowNotificationChangedEvent>(_onShouldShowNotificationChangedEvent);
     on<SaveEvent>(_onSaveEvent);
   }
 
   void _onDateChanged(DateChangedEvent event, Emitter<AddEventState> emitter) {
-    final updatedTime = DateTime.parse(
-        "${event.dateTime.monthDateYearString} ${state.dateTime.timeString}");
+    final updatedTime = getCombinedDate(dateWithYear: event.dateTime, dateWithTime: state.dateTime);
     emitter(AddEventState(event: state.event.copyWith(timeStamp: updatedTime)));
   }
 
   void _onTimeChanged(TimeChangedEvent event, Emitter<AddEventState> emitter) {
-    final updatedTime = DateTime.parse(
-        "${state.dateTime.monthDateYearString} ${event.dateTime.timeString}");
+    final updatedTime = getCombinedDate(dateWithYear: state.dateTime, dateWithTime: event.dateTime);
     emitter(AddEventState(event: state.event.copyWith(timeStamp: updatedTime)));
   }
 
@@ -33,12 +32,21 @@ class AddEventBloc extends Bloc<AddEventEvent, AddEventState> {
 
   void _onSaveEvent(_, Emitter<AddEventState> emitter) {
     if (state.name.isEmpty) {
-      emitter(AddEventState(event: state.event, validationState: ValidationState.empty));
+      emitter(AddEventState(
+          event: state.event, validationState: ValidationState.empty));
     } else {
       emitter(AddEventState(
-          event: state.event.copyWith(timeStamp: state.event.timeStamp, date: state.event.timeStamp.toYearDay()),
-          validationState: ValidationState.success)
-      );
+          event: state.event.copyWith(
+              timeStamp: state.event.timeStamp,
+              date: state.event.timeStamp.toYearDay()),
+          validationState: ValidationState.success));
     }
+  }
+
+  void _onShouldShowNotificationChangedEvent(
+      ShouldShowNotificationChangedEvent event,
+      Emitter<AddEventState> emitter) {
+    emitter(AddEventState(
+        event: state.event, shouldSetNotification: event.newValue));
   }
 }
