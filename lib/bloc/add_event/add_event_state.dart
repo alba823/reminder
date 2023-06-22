@@ -18,4 +18,13 @@ final class AddEventState {
       : event = event ?? Event.optional(name: ""),
         validationState = validationState ?? ValidationState.idle,
         shouldSetNotification = shouldSetNotification ?? false;
+
+  AddEventState copyWith(
+          {Event? event,
+          ValidationState? validationState,
+          bool? shouldSetNotification}) =>
+      AddEventState(
+          event: event ?? this.event,
+          validationState: validationState ?? this.validationState,
+          shouldSetNotification: shouldSetNotification ?? this.shouldSetNotification);
 }

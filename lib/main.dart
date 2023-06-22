@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reminder/utils/services/notification_service.dart';
 
 import 'data/database/database.dart';
 import 'providers/providers.dart';
@@ -6,6 +7,7 @@ import 'providers/providers.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await NotificationService().init();
   final database = await $FloorAppDatabase.databaseBuilder('flutter_database.db').build();
 
   runApp(MyApp(database: database));

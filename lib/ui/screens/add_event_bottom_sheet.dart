@@ -82,7 +82,7 @@ class AddEventBottomSheet extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 24, right: 12),
                     child: _getCheckBoxRowItem(
-                        hint: "Set reminder",
+                        hint: "Show notification",
                         value: state.shouldSetNotification,
                         onPressed: (newValue) =>
                             BlocProvider.of<AddEventBloc>(context).add(

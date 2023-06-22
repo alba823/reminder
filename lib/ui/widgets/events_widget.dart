@@ -8,6 +8,7 @@ import 'package:reminder/ui/screens/add_event_bottom_sheet.dart';
 import 'package:reminder/ui/widgets/general/customized_checkbox.dart';
 import 'package:reminder/ui/widgets/general/customized_outlined_button.dart';
 import 'package:reminder/utils/extensions/date_time_extensions.dart';
+import 'package:reminder/utils/services/notification_service.dart';
 
 class EventsWidget extends StatelessWidget {
   const EventsWidget({super.key, required this.buttonBackgroundColor});
@@ -61,6 +62,7 @@ class EventsWidget extends StatelessWidget {
                           child: Icon(Icons.edit))),
                   child: EventWidget(
                     name: event.name,
+                    time: event.timeStamp,
                     isChecked: event.isChecked,
                     onChecked: (isChecked) {
                       BlocProvider.of<EventsBloc>(context)
@@ -85,7 +87,7 @@ class EventsWidget extends StatelessWidget {
             isScrollControlled: true,
             builder: (context) {
               return BlocProvider(
-                  create: (_) => AddEventBloc(
+                  create: (_) => AddEventBloc(NotificationService(),
                       event: Event.optional(
                           name: "",
                           timeStamp: getCombinedDate(
@@ -105,10 +107,12 @@ class EventWidget extends StatelessWidget {
   const EventWidget(
       {super.key,
       required this.name,
+      required this.time,
       required this.isChecked,
       required this.onChecked});
 
   final String name;
+  final DateTime time;
   final bool isChecked;
   final Function(bool) onChecked;
 
@@ -120,10 +124,16 @@ class EventWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(name),
-          CustomizedCheckBox(
-            isChecked: isChecked,
-            onChecked: (updatedValue) => onChecked(updatedValue),
-          )
+          Row(
+            children: [
+              Text(time.toTime()),
+              CustomizedCheckBox(
+                isChecked: isChecked,
+                onChecked: (updatedValue) => onChecked(updatedValue),
+              )
+            ],
+          ),
+
         ],
       ),
     );
