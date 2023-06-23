@@ -36,7 +36,7 @@ class EventsWidget extends StatelessWidget {
             children: [
               Dismissible(
                   key: Key(event.id.toString()),
-                  onDismissed: (_) {
+                  onDismissed: (direction) {
                     BlocProvider.of<EventsBloc>(context)
                         .add(DeleteEvent(event, () {
                       BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
@@ -46,8 +46,17 @@ class EventsWidget extends StatelessWidget {
                     DismissDirection.startToEnd: 0.6,
                     DismissDirection.endToStart: 0.2,
                   },
-                  confirmDismiss: (direction) async =>
-                      direction == DismissDirection.startToEnd,
+                  confirmDismiss: (direction) async {
+                    switch (direction) {
+                      case DismissDirection.startToEnd:
+                        return true;
+                      case DismissDirection.endToStart:
+                        _showBottomSheet(context, event: event);
+                        return false;
+                      default:
+                        return false;
+                    }
+                  },
                   background: Container(
                       alignment: Alignment.centerLeft,
                       color: Colors.redAccent,
@@ -82,13 +91,20 @@ class EventsWidget extends StatelessWidget {
 
   Widget _getAddEventButton(BuildContext context) {
     return CustomizedOutlinedButton(
-        onPressed: () => showModalBottomSheet<dynamic>(
-            context: context,
-            isScrollControlled: true,
-            builder: (context) {
-              return BlocProvider(
-                  create: (_) => AddEventBloc(NotificationService(),
-                      event: Event.optional(
+        onPressed: () => _showBottomSheet(context),
+        buttonBackgroundColor: buttonBackgroundColor,
+        icon: Icons.add);
+  }
+
+  void _showBottomSheet(BuildContext context, {Event? event}) {
+    showModalBottomSheet<dynamic>(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return BlocProvider(
+              create: (_) => AddEventBloc(NotificationService(),
+                  event: event ??
+                      Event.optional(
                           name: "",
                           timeStamp: getCombinedDate(
                               dateWithYear:
@@ -96,10 +112,8 @@ class EventsWidget extends StatelessWidget {
                                       .state
                                       .selectedDay,
                               dateWithTime: DateTime.now()))),
-                  child: const AddEventBottomSheet());
-            }),
-        buttonBackgroundColor: buttonBackgroundColor,
-        icon: Icons.add);
+              child: const AddEventBottomSheet());
+        });
   }
 }
 
@@ -133,7 +147,6 @@ class EventWidget extends StatelessWidget {
               )
             ],
           ),
-
         ],
       ),
     );

@@ -18,7 +18,7 @@ abstract class EventDao {
   @delete
   Future<void> deleteEvents(List<Event> events);
 
-  @insert
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertEvent(Event event);
 
   @insert

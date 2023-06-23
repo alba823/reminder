@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `events` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `timeStamp` INTEGER NOT NULL, `date` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `events` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `timeStamp` INTEGER NOT NULL, `date` TEXT NOT NULL, `notificationId` INTEGER NOT NULL)');
         await database.execute(
             'CREATE UNIQUE INDEX `index_events_id` ON `events` (`id`)');
 
@@ -114,7 +114,8 @@ class _$EventDao extends EventDao {
                   'name': item.name,
                   'isChecked': item.isChecked ? 1 : 0,
                   'timeStamp': _dateTimeConverter.encode(item.timeStamp),
-                  'date': item.date
+                  'date': item.date,
+                  'notificationId': item.notificationId
                 }),
         _eventUpdateAdapter = UpdateAdapter(
             database,
@@ -125,7 +126,8 @@ class _$EventDao extends EventDao {
                   'name': item.name,
                   'isChecked': item.isChecked ? 1 : 0,
                   'timeStamp': _dateTimeConverter.encode(item.timeStamp),
-                  'date': item.date
+                  'date': item.date,
+                  'notificationId': item.notificationId
                 }),
         _eventDeletionAdapter = DeletionAdapter(
             database,
@@ -136,7 +138,8 @@ class _$EventDao extends EventDao {
                   'name': item.name,
                   'isChecked': item.isChecked ? 1 : 0,
                   'timeStamp': _dateTimeConverter.encode(item.timeStamp),
-                  'date': item.date
+                  'date': item.date,
+                  'notificationId': item.notificationId
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -176,7 +179,7 @@ class _$EventDao extends EventDao {
 
   @override
   Future<void> insertEvent(Event event) async {
-    await _eventInsertionAdapter.insert(event, OnConflictStrategy.abort);
+    await _eventInsertionAdapter.insert(event, OnConflictStrategy.replace);
   }
 
   @override
