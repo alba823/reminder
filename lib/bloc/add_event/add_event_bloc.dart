@@ -41,7 +41,7 @@ class AddEventBloc extends Bloc<AddEventEvent, AddEventState> {
 
   void _onSaveEvent(_, Emitter<AddEventState> emitter) async {
     if (state.name.isEmpty) {
-      emitter(AddEventState(
+      emitter(state.copyWith(
           event: state.event, validationState: ValidationState.empty));
     } else {
       await _setNotificationIfNeeded();
