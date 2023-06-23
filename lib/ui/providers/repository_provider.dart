@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/data/local_storage/local_storage_service.dart';
 import 'package:reminder/data/models/event_dao.dart';
 import 'package:reminder/data/repo/repository.dart';
-import 'package:reminder/providers/blocs_provider.dart';
+import 'package:reminder/ui/providers/providers.dart';
 
 class RepositoryProviderWidget extends StatelessWidget {
   const RepositoryProviderWidget({super.key, required this.eventDao});

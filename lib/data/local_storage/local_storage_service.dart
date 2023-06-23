@@ -5,11 +5,11 @@ abstract class LocalStorageService {
 
   Future<void> changeTheme();
 
-  Future<void> prepare();
+  Future<bool> prepare();
 }
 
 class LocalStorageServiceImpl implements LocalStorageService {
-  static const _isDarkThemeStorageKey = "isDarkTheme";
+  static const isDarkThemeStorageKey = "isDarkTheme";
   static const _localStorageKey = "localStorageKey";
 
   LocalStorageServiceImpl({LocalStorage? localStorage})
@@ -18,18 +18,18 @@ class LocalStorageServiceImpl implements LocalStorageService {
   final LocalStorage _localStorage;
 
   @override
-  Future<void> prepare() async {
-    await _localStorage.ready;
+  Future<bool> prepare() async {
+    return _localStorage.ready;
   }
 
   @override
   Future<void> changeTheme() async {
     final isCurrentThemeDark = isDarkTheme();
-    await _localStorage.setItem(_isDarkThemeStorageKey, !isCurrentThemeDark);
+    await _localStorage.setItem(isDarkThemeStorageKey, !isCurrentThemeDark);
   }
 
   @override
   bool isDarkTheme() {
-    return _localStorage.getItem(_isDarkThemeStorageKey) ?? true;
+    return _localStorage.getItem(isDarkThemeStorageKey) ?? true;
   }
 }

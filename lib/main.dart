@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reminder/utils/services/notification_service.dart';
 
 import 'data/database/database.dart';
-import 'providers/providers.dart';
+import 'ui/providers/providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
