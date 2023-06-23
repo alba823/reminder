@@ -4,6 +4,7 @@ import 'package:reminder/bloc/calendar/calendar_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/ui/widgets/calendar_widget.dart';
 import 'package:reminder/ui/widgets/events_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarScreen extends StatelessWidget {
   const CalendarScreen(
@@ -22,7 +23,7 @@ class CalendarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _getAppBar(backgroundColor, textColor, icon, () {
+        appBar: _getAppBar(AppLocalizations.of(context)!.appTitle, backgroundColor, textColor, icon, () {
           BlocProvider.of<ThemeCubit>(context).switchTheme();
           BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
         }),
@@ -35,13 +36,13 @@ class CalendarScreen extends StatelessWidget {
         ));
   }
 
-  PreferredSizeWidget? _getAppBar(Color backgroundColor, Color textColor,
+  PreferredSizeWidget? _getAppBar(String title, Color backgroundColor, Color textColor,
       IconData icon, VoidCallback onSwitchThemePressed) {
     return AppBar(
       elevation: 0,
       backgroundColor: backgroundColor,
       title: Text(
-        "Reminder",
+        title,
         style: TextStyle(color: textColor),
       ),
       actions: <Widget>[

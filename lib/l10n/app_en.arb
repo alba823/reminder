@@ -1,0 +1,10 @@
+{
+  "appTitle": "Reminder",
+  "undefinedButtonText": "Undefined",
+  "saveButtonText": "Save",
+  "eventNameFormHintText": "Enter event name",
+  "dateHintText": "Date",
+  "timeHintText": "Time",
+  "showNotificationHintText": "Show notification",
+  "requiredFieldIsMissingText": "This field is required"
+}

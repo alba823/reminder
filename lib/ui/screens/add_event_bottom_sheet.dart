@@ -9,6 +9,7 @@ import 'package:reminder/ui/widgets/general/customized_outlined_button.dart';
 import 'package:reminder/utils/extensions/date_time_extensions.dart';
 import 'package:reminder/utils/values/theme_values.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 typedef OnDateTimeChanged = void Function(DateTime);
 
@@ -42,15 +43,15 @@ class AddEventBottomSheet extends StatelessWidget {
                     child: TextFormField(
                       key: formKey,
                       initialValue: state.name.isEmpty ? null : state.name,
-                      validator: _validateName,
+                      validator: (value) => _validateName(value, AppLocalizations.of(context)!.requiredFieldIsMissingText),
                       scrollPadding: EdgeInsets.only(
                           bottom: MediaQuery
                               .of(context)
                               .viewInsets
                               .bottom),
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          hintText: "Enter event name"),
+                      decoration: InputDecoration(
+                          border: const UnderlineInputBorder(),
+                          hintText: AppLocalizations.of(context)!.eventNameFormHintText),
                       onChanged: (newName) {
                         BlocProvider.of<AddEventBloc>(context)
                             .add(NameChangedEvent(newName));
@@ -61,7 +62,7 @@ class AddEventBottomSheet extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 24, right: 24),
                     child: _getRowItem(
-                        hint: "Date",
+                        hint: AppLocalizations.of(context)!.dateHintText,
                         value: state.dateTime.toMonthDayYear(),
                         onPressed: () {
                           _showDateTimePicker(
@@ -77,7 +78,7 @@ class AddEventBottomSheet extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 24, right: 24),
                     child: _getRowItem(
-                      hint: "Time",
+                      hint: AppLocalizations.of(context)!.timeHintText,
                       value: state.dateTime.toTime(),
                       onPressed: () =>
                           _showDateTimePicker(
@@ -93,7 +94,7 @@ class AddEventBottomSheet extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 24, right: 12),
                     child: _getCheckBoxRowItem(
-                        hint: "Show notification",
+                        hint: AppLocalizations.of(context)!.showNotificationHintText,
                         value: state.shouldSetNotification,
                         onPressed: (newValue) =>
                             BlocProvider.of<AddEventBloc>(context).add(
@@ -105,7 +106,7 @@ class AddEventBottomSheet extends StatelessWidget {
                       formKey.currentState?.validate();
                     },
                     buttonBackgroundColor: buttonBackgroundColor,
-                    text: "Save",
+                    text: AppLocalizations.of(context)!.saveButtonText,
                   ),
                   SizedBox(height: spacerHeight)
                 ],
@@ -122,9 +123,9 @@ class AddEventBottomSheet extends StatelessWidget {
     });
   }
 
-  String? _validateName(String? value) {
+  String? _validateName(String? value, String errorMessage) {
     if (value?.isEmpty == true) {
-      return "This field is required";
+      return errorMessage;
     }
     return null;
   }

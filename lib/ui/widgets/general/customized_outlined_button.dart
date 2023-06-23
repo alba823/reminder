@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomizedOutlinedButton extends StatelessWidget {
   const CustomizedOutlinedButton(
@@ -21,7 +22,7 @@ class CustomizedOutlinedButton extends StatelessWidget {
     } else if (text != null) {
       childWidget = Text(text!);
     } else {
-      childWidget = const Text("Undefined");
+      childWidget = Text(AppLocalizations.of(context)!.undefinedButtonText);
     }
 
     return OutlinedButton(

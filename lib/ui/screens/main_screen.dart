@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/ui/screens/calendar_screen.dart';
 import 'package:reminder/utils/values/theme_values.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -24,6 +25,8 @@ class MainScreen extends StatelessWidget {
           theme: lightTheme,
           darkTheme: darkTheme,
           themeMode: themeMode,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: CalendarScreen(
             textColor: textColor,
             buttonBackgroundColor: buttonBackgroundColor,
