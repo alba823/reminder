@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/data/local_storage/local_storage_service.dart';
 import 'package:reminder/data/models/event_dao.dart';
-import 'package:reminder/data/repo/repository.dart';
+import 'package:reminder/data/repository/repository.dart';
 import 'package:reminder/ui/providers/providers.dart';
 
 class RepositoryProviderWidget extends StatelessWidget {

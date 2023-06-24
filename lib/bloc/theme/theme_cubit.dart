@@ -5,21 +5,21 @@ import 'package:reminder/data/local_storage/local_storage_service.dart';
 part 'theme_state.dart';
 
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit({required this.localStorageService}) : super(ThemeState.dark);
+  ThemeCubit({required LocalStorageService localStorageService}) : _localStorageService = localStorageService, super(ThemeState.dark);
 
-  final LocalStorageService localStorageService;
+  final LocalStorageService _localStorageService;
 
   bool isDarkTheme() => state.isDarkTheme();
 
   void setPreviousTheme() async {
-    await localStorageService.prepare();
-    final isLastThemeDark = localStorageService.isDarkTheme();
+    await _localStorageService.prepare();
+    final isLastThemeDark = _localStorageService.isDarkTheme();
     emit(isLastThemeDark ? ThemeState.dark : ThemeState.light);
   }
 
   void switchTheme() async {
     emit(state.isDarkTheme() ? ThemeState.light : ThemeState.dark);
-    await localStorageService.changeTheme();
+    await _localStorageService.changeTheme();
   }
 }
 

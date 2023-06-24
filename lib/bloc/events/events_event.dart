@@ -31,7 +31,6 @@ class GetAllEvents extends EventsEvent {
 
 class GetEventsForDate extends EventsEvent {
   final DateTime dateTime;
-
   @override
   VoidCallback get onCompleted => () {};
 
@@ -40,9 +39,8 @@ class GetEventsForDate extends EventsEvent {
 
 class CheckEvent extends EventsEvent {
   final Event event;
-  final bool isChecked;
   @override
   final VoidCallback onCompleted;
 
-  CheckEvent(this.event, this.isChecked, this.onCompleted);
+  CheckEvent(this.event, this.onCompleted);
 }

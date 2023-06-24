@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
-import 'package:reminder/bloc/events_v1/events_bloc.dart';
+import 'package:reminder/bloc/events/events_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/data/models/event.dart';
 import 'package:reminder/utils/values/calendar_values.dart';
@@ -51,14 +51,7 @@ class CalendarWidget extends StatelessWidget {
         onDaySelected: (dateTime, _) {
           calendarBloc.add(OnDayClicked(dateTime));
           eventBloc.add(GetEventsForDate(dateTime));
-        },
-        onDayLongPressed: (dateTime, _) {
-          calendarBloc.add(OnDayLongClicked(dateTime, () {
-            eventBloc.add(GetAllEvents(onCompleted: () {
-              eventBloc.add(GetEventsForDate(dateTime));
-            }));
-          }));
-        },
+        }
       );
     });
   }

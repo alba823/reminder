@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
-import 'package:reminder/bloc/events_v1/events_bloc.dart';
+import 'package:reminder/bloc/events/events_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/data/local_storage/local_storage_service.dart';
-import 'package:reminder/data/repo/repository.dart';
+import 'package:reminder/data/repository/repository.dart';
 import 'package:reminder/ui/screens/main_screen.dart';
 
 class BlocsProviderWidget extends StatelessWidget {

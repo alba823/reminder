@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/add_event/add_event_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
-import 'package:reminder/bloc/events_v1/events_bloc.dart';
+import 'package:reminder/bloc/events/events_bloc.dart';
 import 'package:reminder/data/models/event.dart';
 import 'package:reminder/ui/screens/add_event_bottom_sheet.dart';
 import 'package:reminder/ui/widgets/general/customized_checkbox.dart';
@@ -75,7 +75,7 @@ class EventsWidget extends StatelessWidget {
                     isChecked: event.isChecked,
                     onChecked: (isChecked) {
                       BlocProvider.of<EventsBloc>(context)
-                          .add(CheckEvent(event, isChecked, () {
+                          .add(CheckEvent(event, () {
                         BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
                       }));
                     },

@@ -7,11 +7,5 @@ class OnDayClicked extends CalendarEvent {
 
   OnDayClicked(this.selectedDay);
 }
-class OnDayLongClicked extends CalendarEvent {
-  final DateTime selectedDay;
-  final VoidCallback onDayAdded;
-
-  OnDayLongClicked(this.selectedDay, this.onDayAdded);
-}
 
 class OnUpdate extends CalendarEvent {}
