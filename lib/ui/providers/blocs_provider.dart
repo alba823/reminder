@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
-import 'package:reminder/bloc/events/events_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/data/local_storage/local_storage_service.dart';
 import 'package:reminder/data/repository/repository.dart';
@@ -14,21 +13,12 @@ class BlocsProviderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final repository = context.read<Repository>();
     final localStorageService = context.read<LocalStorageService>();
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<ThemeCubit>(
-            create: (_) => ThemeCubit(localStorageService: localStorageService)
-              ..setPreviousTheme(),
-          ),
-          BlocProvider<CalendarBloc>(
-            create: (_) => CalendarBloc(repository),
-          )
-        ],
-        child: BlocProvider<EventsBloc>(
-          create: (buildContext) => EventsBloc(repository)
-            ..add(GetAllEvents(onCompleted: () {
-              BlocProvider.of<CalendarBloc>(buildContext).add(OnUpdate());
-            })),
+    return BlocProvider<ThemeCubit>(
+        create: (_) => ThemeCubit(localStorageService: localStorageService)
+          ..setPreviousTheme(),
+        child: BlocProvider<CalendarBloc>(
+          create: (buildContext) =>
+              CalendarBloc(repository)..add(GetAllEvents()),
           child: const MainScreen(),
         ));
   }

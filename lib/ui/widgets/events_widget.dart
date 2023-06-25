@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/add_event/add_event_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
-import 'package:reminder/bloc/events/events_bloc.dart';
 import 'package:reminder/data/models/event.dart';
 import 'package:reminder/ui/screens/add_event_bottom_sheet.dart';
 import 'package:reminder/ui/widgets/general/customized_checkbox.dart';
@@ -17,7 +16,7 @@ class EventsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
+    return BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
       final items = state.getEventsForDate();
       if (items.isEmpty) {
         return Center(child: _getAddEventButton(context));
@@ -37,10 +36,7 @@ class EventsWidget extends StatelessWidget {
               Dismissible(
                   key: Key(event.id.toString()),
                   onDismissed: (direction) {
-                    BlocProvider.of<EventsBloc>(context)
-                        .add(DeleteEvent(event, () {
-                      BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
-                    }));
+                    BlocProvider.of<CalendarBloc>(context).add(DeleteEvent(event));
                   },
                   dismissThresholds: const {
                     DismissDirection.startToEnd: 0.6,
@@ -74,10 +70,7 @@ class EventsWidget extends StatelessWidget {
                     time: event.timeStamp,
                     isChecked: event.isChecked,
                     onChecked: (isChecked) {
-                      BlocProvider.of<EventsBloc>(context)
-                          .add(CheckEvent(event, () {
-                        BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
-                      }));
+                      BlocProvider.of<CalendarBloc>(context).add(CheckEvent(event));
                     },
                   )),
               if (index != items.length - 1)
@@ -110,7 +103,7 @@ class EventsWidget extends StatelessWidget {
                               dateWithYear:
                                   BlocProvider.of<CalendarBloc>(context)
                                       .state
-                                      .selectedDay,
+                                      .currentDateTime,
                               dateWithTime: DateTime.now()))),
               child: const AddEventBottomSheet());
         });

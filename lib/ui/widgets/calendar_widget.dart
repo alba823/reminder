@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
-import 'package:reminder/bloc/events/events_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/data/models/event.dart';
 import 'package:reminder/utils/values/calendar_values.dart';
@@ -16,9 +15,6 @@ class CalendarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CalendarBloc, CalendarState>(
         builder: (buildContext, state) {
-      final calendarBloc = BlocProvider.of<CalendarBloc>(context);
-      final eventBloc = BlocProvider.of<EventsBloc>(context);
-
       final themePrimaryColor =
           BlocProvider.of<ThemeCubit>(context).isDarkTheme()
               ? lightThemeColor
@@ -28,7 +24,7 @@ class CalendarWidget extends StatelessWidget {
               ? darkThemeColor
               : lightThemeColor;
       return TableCalendar<Event>(
-        focusedDay: state.selectedDay,
+        focusedDay: state.currentDateTime,
         firstDay: kFirstDay,
         lastDay: kLastDay,
         headerStyle: const HeaderStyle(titleCentered: true),
@@ -45,12 +41,11 @@ class CalendarWidget extends StatelessWidget {
         startingDayOfWeek: StartingDayOfWeek.monday,
         calendarBuilders: CalendarBuilders(markerBuilder: _getMarkerBuilder),
         eventLoader: (dateTime) =>
-            eventBloc.state.getEventsForDate(dateTime: dateTime),
+            state.getEventsForDate(dateTime: dateTime),
         selectedDayPredicate: (d) =>
-            d.toYearDay() == state.selectedDay.toYearDay(),
+            d.toYearDay() == state.currentDateTime.toYearDay(),
         onDaySelected: (dateTime, _) {
-          calendarBloc.add(OnDayClicked(dateTime));
-          eventBloc.add(GetEventsForDate(dateTime));
+          BlocProvider.of<CalendarBloc>(context).add(GetEventsForDate(dateTime));
         }
       );
     });

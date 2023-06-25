@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/bloc/add_event/add_event_bloc.dart';
 import 'package:reminder/bloc/calendar/calendar_bloc.dart';
-import 'package:reminder/bloc/events/events_bloc.dart';
 import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/ui/widgets/general/customized_checkbox.dart';
 import 'package:reminder/ui/widgets/general/customized_outlined_button.dart';
@@ -115,9 +114,7 @@ class AddEventBottomSheet extends StatelessWidget {
       );
     }, listener: (context, state) {
       if (state.validationState == ValidationState.success) {
-        BlocProvider.of<EventsBloc>(context).add(AddEvent(state.event, () {
-          BlocProvider.of<CalendarBloc>(context).add(OnUpdate());
-        }));
+        BlocProvider.of<CalendarBloc>(context).add(AddEvent(state.event));
         Navigator.pop(context);
       }
     });
