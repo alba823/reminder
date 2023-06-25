@@ -5,20 +5,24 @@ import 'package:reminder/bloc/calendar/calendar_bloc.dart';
 import 'package:reminder/data/models/event.dart';
 import 'package:reminder/data/repository/repository.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:reminder/utils/services/notification_service.dart';
 
-@GenerateNiceMocks([MockSpec<Repository>()])
+@GenerateNiceMocks([MockSpec<Repository>(), MockSpec<NotificationService>()])
 import 'calendar_bloc_test.mocks.dart';
 
 void main() {
   late Repository mockRepository;
+  late NotificationService mockNotificationService;
 
   final dummyEvents =
       List.generate(5, (index) => Event.optional(id: index, name: "$index"));
   final dummyEvent = Event.optional(name: "dummy");
-  final dummyCurrentDateTime = DateTime.now().add(const Duration(days: 2, hours: 4));
+  final dummyCurrentDateTime =
+      DateTime.now().add(const Duration(days: 2, hours: 4));
 
   setUp(() {
     mockRepository = MockRepository();
+    mockNotificationService = MockNotificationService();
   });
 
   blocTest<CalendarBloc, CalendarState>(
@@ -62,7 +66,7 @@ void main() {
 
   blocTest<CalendarBloc, CalendarState>(
       'DeleteEvent should call repository addEvent and then re-fetch events',
-      build: () => CalendarBloc(mockRepository),
+      build: () => CalendarBloc(mockRepository, notificationService: mockNotificationService),
       act: (CalendarBloc bloc) {
         when(mockRepository.getAllEvents())
             .thenAnswer((realInvocation) => Future(() => List.empty()));
@@ -74,6 +78,9 @@ void main() {
       expect: () => [isA<EventsEmpty>()],
       verify: (_) {
         verify(mockRepository.deleteEvent(event: dummyEvent)).called(1);
+        verify(mockNotificationService.removeNotification(
+                notificationId: dummyEvent.notificationId))
+            .called(1);
         verify(mockRepository.getAllEvents()).called(1);
       });
 

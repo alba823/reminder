@@ -162,7 +162,8 @@ class _$EventDao extends EventDao {
             row['name'] as String,
             (row['isChecked'] as int) != 0,
             _dateTimeConverter.decode(row['timeStamp'] as int),
-            row['date'] as String));
+            row['date'] as String,
+            row['notificationId'] as int));
   }
 
   @override
@@ -173,7 +174,8 @@ class _$EventDao extends EventDao {
             row['name'] as String,
             (row['isChecked'] as int) != 0,
             _dateTimeConverter.decode(row['timeStamp'] as int),
-            row['date'] as String),
+            row['date'] as String,
+            row['notificationId'] as int),
         arguments: [dateTime]);
   }
 

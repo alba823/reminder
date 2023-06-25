@@ -13,27 +13,36 @@ class Event {
   final bool isChecked;
   final DateTime timeStamp;
   final String date;
-  final int notificationId = Random().nextInt(999);
+  final int notificationId;
 
-  Event(this.id, this.name, this.isChecked, this.timeStamp, this.date);
+  Event(this.id, this.name, this.isChecked, this.timeStamp, this.date,
+      this.notificationId);
 
   factory Event.optional(
           {int? id,
           required String name,
           bool? isChecked,
           DateTime? timeStamp,
-          String? date}) =>
-      Event(id, name, isChecked ?? false, timeStamp ?? DateTime.now(),
-          date ?? timeStamp?.toYearDay() ?? DateTime.now().toYearDay());
+          String? date,
+          int? notificationId}) =>
+      Event(
+          id,
+          name,
+          isChecked ?? false,
+          timeStamp ?? DateTime.now(),
+          date ?? timeStamp?.toYearDay() ?? DateTime.now().toYearDay(),
+          notificationId ?? Random().nextInt(1000));
 
   Event copyWith(
-      {String? name, bool? isChecked, DateTime? timeStamp, String? date}) {
+      {String? name, bool? isChecked, DateTime? timeStamp, String? date, int? notificationId}) {
     return Event.optional(
         id: id,
         name: name ?? this.name,
         isChecked: isChecked ?? this.isChecked,
         timeStamp: timeStamp ?? this.timeStamp,
-        date: date ?? this.date);
+        date: date ?? this.date,
+        notificationId: notificationId ?? this.notificationId
+    );
   }
 
   @override

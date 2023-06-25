@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -17,7 +19,7 @@ abstract class NotificationService {
       required String text,
       required DateTime dateTime});
 
-
+  Future<void> removeNotification({required int notificationId});
 }
 
 class NotificationServiceImpl implements NotificationService {
@@ -37,21 +39,23 @@ class NotificationServiceImpl implements NotificationService {
         'Reminder channel id', 'reminder notifications channel',
         channelDescription: 'your channel description',
         importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
+        priority: Priority.high);
     const darwinNotificationDetails = DarwinNotificationDetails();
     const notificationDetails = NotificationDetails(
         android: androidNotificationDetails, iOS: darwinNotificationDetails);
 
     final localDateTime = tz.TZDateTime.from(dateTime, tz.local);
-    print(
-        "wont show notifications: ${localDateTime.isBefore(tz.TZDateTime.now(tz.local))}");
     if (localDateTime.isBefore(tz.TZDateTime.now(tz.local))) return;
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        notificationId, _notificationTitle, text, localDateTime, notificationDetails,
+    await flutterLocalNotificationsPlugin.zonedSchedule(notificationId,
+        _notificationTitle, text, localDateTime, notificationDetails,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
+  }
+
+  @override
+  Future<void> removeNotification({required int notificationId}) async {
+    return flutterLocalNotificationsPlugin.cancel(notificationId);
   }
 
   @override
@@ -80,7 +84,8 @@ class NotificationServiceImpl implements NotificationService {
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestPermission();
+        ?.requestPermission()
+        .then((value) => print("Android permission: $value"));
 
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
@@ -89,7 +94,8 @@ class NotificationServiceImpl implements NotificationService {
           alert: true,
           badge: true,
           sound: true,
-        );
+        )
+        .then((value) => print("IOS permission: $value"));
   }
 }
 

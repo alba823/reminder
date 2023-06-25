@@ -8,6 +8,7 @@ import 'dart:async' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:reminder/data/models/event.dart' as _i4;
 import 'package:reminder/data/repository/repository.dart' as _i2;
+import 'package:reminder/utils/services/notification_service.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -97,6 +98,52 @@ class MockRepository extends _i1.Mock implements _i2.Repository {
           #deleteEvent,
           [],
           {#event: event},
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+}
+
+/// A class which mocks [NotificationService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockNotificationService extends _i1.Mock
+    implements _i5.NotificationService {
+  @override
+  _i3.Future<void> init() => (super.noSuchMethod(
+        Invocation.method(
+          #init,
+          [],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+  @override
+  _i3.Future<void> scheduleNotification({
+    required int? notificationId,
+    required String? text,
+    required DateTime? dateTime,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #scheduleNotification,
+          [],
+          {
+            #notificationId: notificationId,
+            #text: text,
+            #dateTime: dateTime,
+          },
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+  @override
+  _i3.Future<void> removeNotification({required int? notificationId}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #removeNotification,
+          [],
+          {#notificationId: notificationId},
         ),
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
