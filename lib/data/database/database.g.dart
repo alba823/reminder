@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `events` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `timeStamp` INTEGER NOT NULL, `date` TEXT NOT NULL, `notificationId` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `events` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `timeStamp` INTEGER NOT NULL, `date` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `shouldShowNotification` INTEGER NOT NULL)');
         await database.execute(
             'CREATE UNIQUE INDEX `index_events_id` ON `events` (`id`)');
 
@@ -115,7 +115,8 @@ class _$EventDao extends EventDao {
                   'isChecked': item.isChecked ? 1 : 0,
                   'timeStamp': _dateTimeConverter.encode(item.timeStamp),
                   'date': item.date,
-                  'notificationId': item.notificationId
+                  'notificationId': item.notificationId,
+                  'shouldShowNotification': item.shouldShowNotification ? 1 : 0
                 }),
         _eventUpdateAdapter = UpdateAdapter(
             database,
@@ -127,7 +128,8 @@ class _$EventDao extends EventDao {
                   'isChecked': item.isChecked ? 1 : 0,
                   'timeStamp': _dateTimeConverter.encode(item.timeStamp),
                   'date': item.date,
-                  'notificationId': item.notificationId
+                  'notificationId': item.notificationId,
+                  'shouldShowNotification': item.shouldShowNotification ? 1 : 0
                 }),
         _eventDeletionAdapter = DeletionAdapter(
             database,
@@ -139,7 +141,8 @@ class _$EventDao extends EventDao {
                   'isChecked': item.isChecked ? 1 : 0,
                   'timeStamp': _dateTimeConverter.encode(item.timeStamp),
                   'date': item.date,
-                  'notificationId': item.notificationId
+                  'notificationId': item.notificationId,
+                  'shouldShowNotification': item.shouldShowNotification ? 1 : 0
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -163,7 +166,8 @@ class _$EventDao extends EventDao {
             (row['isChecked'] as int) != 0,
             _dateTimeConverter.decode(row['timeStamp'] as int),
             row['date'] as String,
-            row['notificationId'] as int));
+            row['notificationId'] as int,
+            (row['shouldShowNotification'] as int) != 0));
   }
 
   @override
@@ -175,7 +179,8 @@ class _$EventDao extends EventDao {
             (row['isChecked'] as int) != 0,
             _dateTimeConverter.decode(row['timeStamp'] as int),
             row['date'] as String,
-            row['notificationId'] as int),
+            row['notificationId'] as int,
+            (row['shouldShowNotification'] as int) != 0),
         arguments: [dateTime]);
   }
 

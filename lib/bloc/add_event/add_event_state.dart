@@ -5,7 +5,6 @@ enum ValidationState { success, idle, empty }
 final class AddEventState {
   final Event event;
   final ValidationState validationState;
-  final bool shouldSetNotification;
 
   DateTime get dateTime => event.timeStamp;
 
@@ -13,18 +12,14 @@ final class AddEventState {
 
   AddEventState(
       {Event? event,
-      ValidationState? validationState,
-      bool? shouldSetNotification})
+      ValidationState? validationState})
       : event = event ?? Event.optional(name: ""),
-        validationState = validationState ?? ValidationState.idle,
-        shouldSetNotification = shouldSetNotification ?? false;
+        validationState = validationState ?? ValidationState.idle;
 
   AddEventState copyWith(
           {Event? event,
-          ValidationState? validationState,
-          bool? shouldSetNotification}) =>
+          ValidationState? validationState}) =>
       AddEventState(
           event: event ?? this.event,
-          validationState: validationState ?? this.validationState,
-          shouldSetNotification: shouldSetNotification ?? this.shouldSetNotification);
+          validationState: validationState ?? this.validationState);
 }

@@ -29,3 +29,5 @@ class CheckEvent extends CalendarEvent {
 
   CheckEvent(this.event);
 }
+
+class CheckPermissions extends CalendarEvent {}

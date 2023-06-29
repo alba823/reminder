@@ -14,9 +14,10 @@ class Event {
   final DateTime timeStamp;
   final String date;
   final int notificationId;
+  final bool shouldShowNotification;
 
   Event(this.id, this.name, this.isChecked, this.timeStamp, this.date,
-      this.notificationId);
+      this.notificationId, this.shouldShowNotification);
 
   factory Event.optional(
           {int? id,
@@ -24,29 +25,36 @@ class Event {
           bool? isChecked,
           DateTime? timeStamp,
           String? date,
-          int? notificationId}) =>
+          int? notificationId,
+          bool? shouldShowNotification}) =>
       Event(
           id,
           name,
           isChecked ?? false,
           timeStamp ?? DateTime.now(),
           date ?? timeStamp?.toYearDay() ?? DateTime.now().toYearDay(),
-          notificationId ?? Random().nextInt(1000));
+          notificationId ?? Random().nextInt(9999),
+          shouldShowNotification ?? true);
 
   Event copyWith(
-      {String? name, bool? isChecked, DateTime? timeStamp, String? date, int? notificationId}) {
+      {String? name,
+      bool? isChecked,
+      DateTime? timeStamp,
+      String? date,
+      bool? shouldShowNotification}) {
     return Event.optional(
         id: id,
         name: name ?? this.name,
         isChecked: isChecked ?? this.isChecked,
         timeStamp: timeStamp ?? this.timeStamp,
         date: date ?? this.date,
-        notificationId: notificationId ?? this.notificationId
-    );
+        notificationId: notificationId,
+        shouldShowNotification:
+            shouldShowNotification ?? this.shouldShowNotification);
   }
 
   @override
   String toString() {
-    return "Event(id: $id, name: $name, isChecked: $isChecked, timeStamp: $timeStamp, date: $date, notificationId: $notificationId)";
+    return "Event(id: $id, name: $name, isChecked: $isChecked, timeStamp: $timeStamp, date: $date, notificationId: $notificationId, shouldShowNotification: $shouldShowNotification)";
   }
 }

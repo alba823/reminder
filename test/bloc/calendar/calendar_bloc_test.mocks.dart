@@ -110,6 +110,15 @@ class MockRepository extends _i1.Mock implements _i2.Repository {
 class MockNotificationService extends _i1.Mock
     implements _i5.NotificationService {
   @override
+  _i5.NotificationPermissionState getPermissionState() => (super.noSuchMethod(
+        Invocation.method(
+          #getPermissionState,
+          [],
+        ),
+        returnValue: _i5.NotificationPermissionState.idle,
+        returnValueForMissingStub: _i5.NotificationPermissionState.idle,
+      ) as _i5.NotificationPermissionState);
+  @override
   _i3.Future<void> init() => (super.noSuchMethod(
         Invocation.method(
           #init,
@@ -118,6 +127,19 @@ class MockNotificationService extends _i1.Mock
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
       ) as _i3.Future<void>);
+  @override
+  _i3.Future<_i5.NotificationPermissionState> getUpdatedPermissionState() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getUpdatedPermissionState,
+          [],
+        ),
+        returnValue: _i3.Future<_i5.NotificationPermissionState>.value(
+            _i5.NotificationPermissionState.idle),
+        returnValueForMissingStub:
+            _i3.Future<_i5.NotificationPermissionState>.value(
+                _i5.NotificationPermissionState.idle),
+      ) as _i3.Future<_i5.NotificationPermissionState>);
   @override
   _i3.Future<void> scheduleNotification({
     required int? notificationId,

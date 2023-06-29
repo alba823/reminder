@@ -19,10 +19,12 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     on<GetAllEvents>(_onGetAllEvents);
     on<GetEventsForDate>(_onGetEventsForDate);
     on<CheckEvent>(_onCheckEvent);
+    // on<CheckPermissions>(_onCheckPermissions);
   }
 
   final Repository _repository;
   final NotificationService _notificationService;
+  NotificationPermissionState get notificationPermissionState => _notificationService.getPermissionState();
 
   Future<void> _onAddEvent(
       AddEvent event, Emitter<CalendarState> emitter) async {
@@ -33,9 +35,10 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   Future<void> _onDeleteEvent(
       DeleteEvent event, Emitter<CalendarState> emitter) async {
     await _repository.deleteEvent(event: event.event);
+    _updateState(emitter, event, allEvents: await _repository.getAllEvents());
+    if (!event.event.shouldShowNotification) return;
     await _notificationService.removeNotification(
         notificationId: event.event.notificationId);
-    _updateState(emitter, event, allEvents: await _repository.getAllEvents());
   }
 
   Future<void> _onGetAllEvents(
@@ -54,6 +57,11 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         event: event.event.copyWith(isChecked: !event.event.isChecked));
     _updateState(emitter, event, allEvents: await _repository.getAllEvents());
   }
+
+  // Future<void> _onCheckPermissions(_, Emitter<CalendarState> emitter) async {
+  //   await _notificationService.getUpdatedPermissionState();
+    // emitter(state);
+  // }
 
   void _updateState(Emitter<CalendarState> emitter, CalendarEvent blocEvent,
       {List<Event>? allEvents, DateTime? currentDateTime}) async {

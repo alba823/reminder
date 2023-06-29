@@ -44,7 +44,7 @@ class AddEventBloc extends Bloc<AddEventEvent, AddEventState> {
       emitter(state.copyWith(
           event: state.event, validationState: ValidationState.empty));
     } else {
-      await _setNotificationIfNeeded();
+      await _setOrRemoveNotificationIfNeeded();
       emitter(state.copyWith(
           event: state.event.copyWith(
               timeStamp: state.event.timeStamp,
@@ -53,19 +53,23 @@ class AddEventBloc extends Bloc<AddEventEvent, AddEventState> {
     }
   }
 
-  Future<void> _setNotificationIfNeeded() async {
-    if (state.shouldSetNotification) {
-      final event = state.event;
+  void _onShouldShowNotificationChangedEvent(
+      ShouldShowNotificationChangedEvent event,
+      Emitter<AddEventState> emitter) {
+    emitter(state.copyWith(
+        event: state.event.copyWith(shouldShowNotification: event.newValue)));
+  }
+
+  Future<void> _setOrRemoveNotificationIfNeeded() async {
+    final event = state.event;
+    if (event.shouldShowNotification) {
       await notificationService.scheduleNotification(
           notificationId: event.notificationId,
           text: event.name,
           dateTime: event.timeStamp);
+    } else {
+      await notificationService.removeNotification(
+          notificationId: event.notificationId);
     }
-  }
-
-  void _onShouldShowNotificationChangedEvent(
-      ShouldShowNotificationChangedEvent event,
-      Emitter<AddEventState> emitter) {
-    emitter(state.copyWith(event: state.event, shouldSetNotification: event.newValue));
   }
 }

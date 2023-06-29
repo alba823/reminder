@@ -12,7 +12,11 @@ abstract class NotificationService {
     return _notificationService!;
   }
 
+  abstract NotificationPermissionState _permissionState;
+  NotificationPermissionState getPermissionState();
+
   Future<void> init();
+  Future<NotificationPermissionState> getUpdatedPermissionState();
 
   Future<void> scheduleNotification(
       {required int notificationId,
@@ -22,32 +26,37 @@ abstract class NotificationService {
   Future<void> removeNotification({required int notificationId});
 }
 
+enum NotificationPermissionState { idle, granted, denied }
+
 class NotificationServiceImpl implements NotificationService {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   NotificationServiceImpl(
       {FlutterLocalNotificationsPlugin? flutterNotificationPlugin})
-      : flutterLocalNotificationsPlugin =
+      : _flutterLocalNotificationsPlugin =
             flutterNotificationPlugin ?? FlutterLocalNotificationsPlugin();
+
+  @override
+  NotificationPermissionState _permissionState = NotificationPermissionState.idle;
+
+  @override
+  NotificationPermissionState getPermissionState() => _permissionState;
 
   @override
   Future<void> scheduleNotification(
       {required int notificationId,
       required String text,
       required DateTime dateTime}) async {
-    const androidNotificationDetails = AndroidNotificationDetails(
-        'Reminder channel id', 'reminder notifications channel',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high);
-    const darwinNotificationDetails = DarwinNotificationDetails();
-    const notificationDetails = NotificationDetails(
-        android: androidNotificationDetails, iOS: darwinNotificationDetails);
 
     final localDateTime = tz.TZDateTime.from(dateTime, tz.local);
     if (localDateTime.isBefore(tz.TZDateTime.now(tz.local))) return;
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(notificationId,
+    final pendingNotifications = await _flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    if (pendingNotifications.any((element) => element.id == notificationId)) {
+      await removeNotification(notificationId: notificationId);
+    }
+
+    await _flutterLocalNotificationsPlugin.zonedSchedule(notificationId,
         _notificationTitle, text, localDateTime, notificationDetails,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
@@ -55,48 +64,78 @@ class NotificationServiceImpl implements NotificationService {
 
   @override
   Future<void> removeNotification({required int notificationId}) async {
-    return flutterLocalNotificationsPlugin.cancel(notificationId);
+    return _flutterLocalNotificationsPlugin.cancel(notificationId);
   }
 
   @override
   Future<void> init() async {
     tz.initializeTimeZones();
-    await _ensureThatPermissionsAreGranted();
-    var initializationSettingsAndroid =
-        const AndroidInitializationSettings('app_icon');
 
-    var initializationSettingsIOS = const DarwinInitializationSettings(
-        requestSoundPermission: true,
-        requestBadgePermission: true,
-        requestAlertPermission: true);
+    await getUpdatedPermissionState();
 
-    var initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
+    if (_permissionState == NotificationPermissionState.denied) return;
 
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
+    await _flutterLocalNotificationsPlugin.initialize(
+      _initializationSettings,
     );
   }
 
-  Future<void> _ensureThatPermissionsAreGranted() async {
-    await flutterLocalNotificationsPlugin
+  Future<bool> _askPermissionsAndGetTheirState() async {
+    final isAndroidPermissionGranted = await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestPermission()
-        .then((value) => print("Android permission: $value"));
+        ?.requestPermission();
 
-    await flutterLocalNotificationsPlugin
+    final isIOSPermissionGranted = await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
           alert: true,
           badge: true,
           sound: true,
-        )
-        .then((value) => print("IOS permission: $value"));
+        );
+
+    return (isAndroidPermissionGranted ?? true) &&
+        (isIOSPermissionGranted ?? true);
+  }
+
+  @override
+  Future<NotificationPermissionState> getUpdatedPermissionState() async {
+    _permissionState = await _askPermissionsAndGetTheirState()
+        ? NotificationPermissionState.granted
+        : NotificationPermissionState.denied;
+
+    return _permissionState;
   }
 }
 
-const _notificationTitle = "Test Notification";
+// region Consts
+
+const androidNotificationDetails = AndroidNotificationDetails(
+    'Reminder channel id', 'reminder notifications channel',
+    channelDescription: 'Channel of your reminder app',
+    importance: Importance.max,
+    priority: Priority.high);
+
+const darwinNotificationDetails = DarwinNotificationDetails();
+
+const notificationDetails = NotificationDetails(
+    android: androidNotificationDetails, iOS: darwinNotificationDetails);
+
+
+const _initializationSettingsAndroid =
+AndroidInitializationSettings('app_icon');
+
+const _initializationSettingsIOS = DarwinInitializationSettings(
+    requestSoundPermission: true,
+    requestBadgePermission: true,
+    requestAlertPermission: true);
+
+const _initializationSettings = InitializationSettings(
+  android: _initializationSettingsAndroid,
+  iOS: _initializationSettingsIOS,
+);
+
+const _notificationTitle = "Don't forget about your task";
+
+// endregion Consts
