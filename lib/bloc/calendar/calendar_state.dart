@@ -1,6 +1,6 @@
 part of 'calendar_bloc.dart';
 
-class CalendarState {
+class CalendarState extends Equatable {
   final List<Event> events;
   final DateTime currentDateTime;
 
@@ -28,4 +28,7 @@ class CalendarState {
           ? e.date == currentDateTime.toYearDay()
           : e.date == dateTime.toYearDay())
       .toList();
+
+  @override
+  List<Object?> get props => [events, permissionState];
 }

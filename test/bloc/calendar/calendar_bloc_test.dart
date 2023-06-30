@@ -33,7 +33,9 @@ void main() {
           .thenAnswer((realInvocation) => Future(() => dummyEvents));
       bloc.add(GetAllEvents());
     },
-    expect: () => [isA<EventsLoaded>()],
+    expect: () => [
+      CalendarState(events: dummyEvents)
+    ],
   );
 
   blocTest<CalendarBloc, CalendarState>(
@@ -44,7 +46,9 @@ void main() {
           .thenAnswer((realInvocation) => Future(() => List.empty()));
       bloc.add(GetAllEvents());
     },
-    expect: () => [isA<EventsEmpty>()],
+    expect: () => [
+      CalendarState()
+    ],
   );
 
   blocTest<CalendarBloc, CalendarState>(
@@ -58,7 +62,7 @@ void main() {
         bloc.add(AddEvent(dummyEvent));
       },
       wait: const Duration(microseconds: 1),
-      expect: () => [isA<EventsEmpty>()],
+      expect: () => [CalendarState()],
       verify: (_) {
         verify(mockRepository.addEvent(event: dummyEvent)).called(1);
         verify(mockRepository.getAllEvents()).called(1);
@@ -75,7 +79,7 @@ void main() {
         bloc.add(DeleteEvent(dummyEvent));
       },
       wait: const Duration(microseconds: 1),
-      expect: () => [isA<EventsEmpty>()],
+      expect: () => [CalendarState()],
       verify: (_) {
         verify(mockRepository.deleteEvent(event: dummyEvent)).called(1);
         verify(mockNotificationService.removeNotification(

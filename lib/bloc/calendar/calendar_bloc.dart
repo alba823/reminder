@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:reminder/data/models/event.dart';
 import 'package:reminder/data/repository/repository.dart';
 import 'package:reminder/utils/extensions/date_time_extensions.dart';
