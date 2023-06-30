@@ -43,12 +43,12 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
     super.dispose();
   }
 
+  // FIXME: update permissions state on each on resume callback
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    print(state);
     if (_lifecycleState != state) {
       if (state == AppLifecycleState.resumed) {
-        BlocProvider.of<CalendarBloc>(context).add(CheckPermissions());
+        // BlocProvider.of<CalendarBloc>(context).add(CheckPermissions());
       }
       setState(() {
         _lifecycleState = state;
@@ -66,7 +66,7 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
         }),
         body: Center(child: BlocBuilder<CalendarBloc, CalendarState>(
           builder: (context, state) {
-            final permissionState = BlocProvider.of<CalendarBloc>(context).notificationPermissionState;
+            final permissionState = state.permissionState;
             return _getBodyByState(permissionState);
           },
         )));

@@ -6,16 +6,19 @@ import 'package:timezone/timezone.dart' as tz;
 
 abstract class NotificationService {
   static NotificationService? _notificationService;
+  static InitializationSettings initializationSettings =
+      const InitializationSettings(
+    android: _initializationSettingsAndroid,
+    iOS: _initializationSettingsIOS,
+  );
 
   factory NotificationService({NotificationService? notificationService}) {
     _notificationService ??= notificationService ?? NotificationServiceImpl();
     return _notificationService!;
   }
 
-  abstract NotificationPermissionState _permissionState;
-  NotificationPermissionState getPermissionState();
-
   Future<void> init();
+
   Future<NotificationPermissionState> getUpdatedPermissionState();
 
   Future<void> scheduleNotification(
@@ -37,27 +40,21 @@ class NotificationServiceImpl implements NotificationService {
             flutterNotificationPlugin ?? FlutterLocalNotificationsPlugin();
 
   @override
-  NotificationPermissionState _permissionState = NotificationPermissionState.idle;
-
-  @override
-  NotificationPermissionState getPermissionState() => _permissionState;
-
-  @override
   Future<void> scheduleNotification(
       {required int notificationId,
       required String text,
       required DateTime dateTime}) async {
-
     final localDateTime = tz.TZDateTime.from(dateTime, tz.local);
     if (localDateTime.isBefore(tz.TZDateTime.now(tz.local))) return;
 
-    final pendingNotifications = await _flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    final pendingNotifications =
+        await _flutterLocalNotificationsPlugin.pendingNotificationRequests();
     if (pendingNotifications.any((element) => element.id == notificationId)) {
       await removeNotification(notificationId: notificationId);
     }
 
     await _flutterLocalNotificationsPlugin.zonedSchedule(notificationId,
-        _notificationTitle, text, localDateTime, notificationDetails,
+        _notificationTitle, text, localDateTime, _notificationDetails,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
   }
@@ -71,13 +68,10 @@ class NotificationServiceImpl implements NotificationService {
   Future<void> init() async {
     tz.initializeTimeZones();
 
-    await getUpdatedPermissionState();
+    if (await getUpdatedPermissionState() == NotificationPermissionState.denied) return;
 
-    if (_permissionState == NotificationPermissionState.denied) return;
-
-    await _flutterLocalNotificationsPlugin.initialize(
-      _initializationSettings,
-    );
+    await _flutterLocalNotificationsPlugin
+        .initialize(NotificationService.initializationSettings);
   }
 
   Future<bool> _askPermissionsAndGetTheirState() async {
@@ -101,40 +95,32 @@ class NotificationServiceImpl implements NotificationService {
 
   @override
   Future<NotificationPermissionState> getUpdatedPermissionState() async {
-    _permissionState = await _askPermissionsAndGetTheirState()
+    return await _askPermissionsAndGetTheirState()
         ? NotificationPermissionState.granted
         : NotificationPermissionState.denied;
-
-    return _permissionState;
   }
 }
 
 // region Consts
 
-const androidNotificationDetails = AndroidNotificationDetails(
+const _androidNotificationDetails = AndroidNotificationDetails(
     'Reminder channel id', 'reminder notifications channel',
     channelDescription: 'Channel of your reminder app',
     importance: Importance.max,
     priority: Priority.high);
 
-const darwinNotificationDetails = DarwinNotificationDetails();
+const _darwinNotificationDetails = DarwinNotificationDetails();
 
-const notificationDetails = NotificationDetails(
-    android: androidNotificationDetails, iOS: darwinNotificationDetails);
-
+const _notificationDetails = NotificationDetails(
+    android: _androidNotificationDetails, iOS: _darwinNotificationDetails);
 
 const _initializationSettingsAndroid =
-AndroidInitializationSettings('app_icon');
+    AndroidInitializationSettings('app_icon');
 
 const _initializationSettingsIOS = DarwinInitializationSettings(
     requestSoundPermission: true,
     requestBadgePermission: true,
     requestAlertPermission: true);
-
-const _initializationSettings = InitializationSettings(
-  android: _initializationSettingsAndroid,
-  iOS: _initializationSettingsIOS,
-);
 
 const _notificationTitle = "Don't forget about your task";
 

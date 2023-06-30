@@ -1,46 +1,28 @@
 part of 'calendar_bloc.dart';
 
-abstract class CalendarState {
-  abstract final List<Event> events;
-
-  List<Event> getEventsForDate({DateTime? dateTime});
-
-  abstract final DateTime currentDateTime;
-
-  CalendarState copyWith({List<Event>? events, DateTime? currentDateTime});
-}
-
-class EventsEmpty extends CalendarState {
-  @override
-  final List<Event> events = List.empty();
-
-  @override
-  List<Event> getEventsForDate({DateTime? dateTime}) => List.empty();
-  @override
-  final DateTime currentDateTime;
-
-  EventsEmpty(this.currentDateTime);
-
-  @override
-  CalendarState copyWith({List<Event>? events, DateTime? currentDateTime}) =>
-      EventsEmpty(currentDateTime ?? this.currentDateTime);
-}
-
-class EventsLoaded extends CalendarState {
-  @override
+class CalendarState {
   final List<Event> events;
-
-  @override
   final DateTime currentDateTime;
 
-  EventsLoaded(this.events, this.currentDateTime);
+  final NotificationPermissionState permissionState;
 
-  @override
-  CalendarState copyWith({List<Event>? events, DateTime? currentDateTime}) =>
-      EventsLoaded(
-          events ?? this.events, currentDateTime ?? this.currentDateTime);
+  CalendarState(
+      {List<Event>? events,
+      DateTime? currentDateTime,
+      NotificationPermissionState? permissionState})
+      : events = events ?? List.empty(),
+        currentDateTime = currentDateTime ?? DateTime.now(),
+        permissionState = permissionState ?? NotificationPermissionState.idle;
 
-  @override
+  CalendarState copyWith(
+          {List<Event>? events,
+          DateTime? currentDateTime,
+          NotificationPermissionState? permissionState}) =>
+      CalendarState(
+          events: events ?? this.events,
+          currentDateTime: currentDateTime ?? this.currentDateTime,
+          permissionState: permissionState ?? this.permissionState);
+
   List<Event> getEventsForDate({DateTime? dateTime}) => events
       .where((e) => dateTime == null
           ? e.date == currentDateTime.toYearDay()
