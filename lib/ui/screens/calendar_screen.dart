@@ -10,12 +10,13 @@ import 'package:reminder/ui/widgets/general/customized_outlined_button.dart';
 import 'package:reminder/utils/services/notification_service.dart';
 
 class CalendarScreen extends StatefulWidget {
-  const CalendarScreen(
-      {super.key,
-        required this.textColor,
-        required this.buttonBackgroundColor,
-        required this.backgroundColor,
-        required this.icon});
+  const CalendarScreen({
+    super.key,
+    required this.textColor,
+    required this.buttonBackgroundColor,
+    required this.backgroundColor,
+    required this.icon,
+  });
 
   final Color textColor;
   final Color buttonBackgroundColor;
@@ -27,8 +28,8 @@ class CalendarScreen extends StatefulWidget {
   State<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObserver {
-
+class _CalendarScreenState extends State<CalendarScreen>
+    with WidgetsBindingObserver {
   AppLifecycleState _lifecycleState = AppLifecycleState.resumed;
 
   @override
@@ -60,50 +61,72 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _getAppBar(AppLocalizations.of(context)!.appTitle,
-            widget.backgroundColor, widget.textColor, widget.icon, () {
+      appBar: _getAppBar(
+        AppLocalizations.of(context)!.appTitle,
+        widget.backgroundColor,
+        widget.textColor,
+        widget.icon,
+        () {
           BlocProvider.of<ThemeCubit>(context).switchTheme();
-        }),
-        body: Center(child: BlocBuilder<CalendarBloc, CalendarState>(
+        },
+      ),
+      body: Center(
+        child: BlocBuilder<CalendarBloc, CalendarState>(
           builder: (context, state) {
             final permissionState = state.permissionState;
             return _getBodyByState(permissionState);
           },
-        )));
+        ),
+      ),
+    );
   }
 
   Widget _getBodyByState(NotificationPermissionState state) {
     switch (state) {
       case NotificationPermissionState.denied:
-        return Center(child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Notifications are required for this app\nPlease enable them"),
-            CustomizedOutlinedButton(
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                  "Notifications are required for this app\nPlease enable them"),
+              CustomizedOutlinedButton(
                 onPressed: () => AppSettings.openNotificationSettings(),
                 buttonBackgroundColor: widget.buttonBackgroundColor,
-              text: "Open Settings",
-            )
-          ],
-        ));
+                text: "Open Settings",
+              )
+            ],
+          ),
+        );
       case NotificationPermissionState.granted:
         return Column(
           children: <Widget>[
             const CalendarWidget(),
             const Padding(
-                padding: EdgeInsets.only(top: 8), child: Divider(height: 0.1)),
+              padding: EdgeInsets.only(top: 8),
+              child: Divider(height: 0.1),
+            ),
             Expanded(
-                child:
-                EventsWidget(buttonBackgroundColor: widget.buttonBackgroundColor)),
+              child: EventsWidget(
+                buttonBackgroundColor: widget.buttonBackgroundColor,
+              ),
+            ),
           ],
         );
       case NotificationPermissionState.idle:
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
     }
   }
 
-  PreferredSizeWidget? _getAppBar(String title, Color backgroundColor,
-      Color textColor, IconData icon, VoidCallback onSwitchThemePressed) {
+  PreferredSizeWidget? _getAppBar(
+    String title,
+    Color backgroundColor,
+    Color textColor,
+    IconData icon,
+    VoidCallback onSwitchThemePressed,
+  ) {
     return AppBar(
       elevation: 0,
       backgroundColor: backgroundColor,
@@ -113,9 +136,10 @@ class _CalendarScreenState extends State<CalendarScreen> with WidgetsBindingObse
       ),
       actions: <Widget>[
         IconButton(
-            splashRadius: 24,
-            onPressed: onSwitchThemePressed,
-            icon: Icon(icon, color: textColor)),
+          splashRadius: 24,
+          onPressed: onSwitchThemePressed,
+          icon: Icon(icon, color: textColor),
+        ),
       ],
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),

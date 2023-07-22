@@ -12,9 +12,16 @@ class RepositoryProviderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(providers: [
-      RepositoryProvider<Repository>(create: (_) => RepositoryImpl(eventDao)),
-      RepositoryProvider<LocalStorageService>(create: (_) => LocalStorageServiceImpl())
-    ], child: const BlocsProviderWidget());
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<Repository>(
+          create: (_) => RepositoryImpl(eventDao),
+        ),
+        RepositoryProvider<LocalStorageService>(
+          create: (_) => LocalStorageServiceImpl(),
+        ),
+      ],
+      child: const BlocsProviderWidget(),
+    );
   }
 }

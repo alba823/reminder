@@ -16,70 +16,78 @@ class EventsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
-      final items = state.getEventsForDate();
-      if (items.isEmpty) {
-        return Center(child: _getAddEventButton(context));
-      } else {
-        return _getEventsList(context, items);
-      }
-    });
+    return BlocBuilder<CalendarBloc, CalendarState>(
+      builder: (context, state) {
+        final items = state.getEventsForDate();
+        if (items.isEmpty) {
+          return Center(child: _getAddEventButton(context));
+        } else {
+          return _getEventsList(context, items);
+        }
+      },
+    );
   }
 
   Widget _getEventsList(BuildContext context, List<Event> items) {
     return ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final event = items[index];
-          return Column(
-            children: [
-              Dismissible(
-                  key: Key(event.id.toString()),
-                  onDismissed: (direction) {
-                    BlocProvider.of<CalendarBloc>(context).add(DeleteEvent(event));
-                  },
-                  dismissThresholds: const {
-                    DismissDirection.startToEnd: 0.6,
-                    DismissDirection.endToStart: 0.2,
-                  },
-                  confirmDismiss: (direction) async {
-                    switch (direction) {
-                      case DismissDirection.startToEnd:
-                        return true;
-                      case DismissDirection.endToStart:
-                        _showBottomSheet(context, event: event);
-                        return false;
-                      default:
-                        return false;
-                    }
-                  },
-                  background: Container(
-                      alignment: Alignment.centerLeft,
-                      color: Colors.redAccent,
-                      child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 24),
-                          child: Icon(Icons.delete))),
-                  secondaryBackground: Container(
-                      alignment: Alignment.centerRight,
-                      color: Colors.greenAccent,
-                      child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 24),
-                          child: Icon(Icons.edit))),
-                  child: EventWidget(
-                    name: event.name,
-                    time: event.timeStamp,
-                    isChecked: event.isChecked,
-                    onChecked: (isChecked) {
-                      BlocProvider.of<CalendarBloc>(context).add(CheckEvent(event));
-                    },
-                  )),
-              if (index != items.length - 1)
-                const Divider(height: 0.1)
-              else
-                _getAddEventButton(context)
-            ],
-          );
-        });
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final event = items[index];
+        return Column(
+          children: [
+            Dismissible(
+              key: Key(event.id.toString()),
+              onDismissed: (direction) {
+                BlocProvider.of<CalendarBloc>(context).add(DeleteEvent(event));
+              },
+              dismissThresholds: const {
+                DismissDirection.startToEnd: 0.6,
+                DismissDirection.endToStart: 0.2,
+              },
+              confirmDismiss: (direction) async {
+                switch (direction) {
+                  case DismissDirection.startToEnd:
+                    return true;
+                  case DismissDirection.endToStart:
+                    _showBottomSheet(context, event: event);
+                    return false;
+                  default:
+                    return false;
+                }
+              },
+              background: Container(
+                alignment: Alignment.centerLeft,
+                color: Colors.redAccent,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Icon(Icons.delete),
+                ),
+              ),
+              secondaryBackground: Container(
+                alignment: Alignment.centerRight,
+                color: Colors.greenAccent,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Icon(Icons.edit),
+                ),
+              ),
+              child: EventWidget(
+                name: event.name,
+                time: event.timeStamp,
+                isChecked: event.isChecked,
+                onChecked: (isChecked) {
+                  BlocProvider.of<CalendarBloc>(context).add(CheckEvent(event));
+                },
+              ),
+            ),
+            if (index != items.length - 1)
+              const Divider(height: 0.1)
+            else
+              _getAddEventButton(context)
+          ],
+        );
+      },
+    );
   }
 
   Widget _getAddEventButton(BuildContext context) {
@@ -91,32 +99,38 @@ class EventsWidget extends StatelessWidget {
 
   void _showBottomSheet(BuildContext context, {Event? event}) {
     showModalBottomSheet<dynamic>(
-        context: context,
-        isScrollControlled: true,
-        builder: (context) {
-          return BlocProvider(
-              create: (_) => AddEventBloc(NotificationService(),
-                  event: event ??
-                      Event.optional(
-                          name: "",
-                          timeStamp: getCombinedDate(
-                              dateWithYear:
-                                  BlocProvider.of<CalendarBloc>(context)
-                                      .state
-                                      .currentDateTime,
-                              dateWithTime: DateTime.now()))),
-              child: const AddEventBottomSheet());
-        });
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return BlocProvider(
+          create: (_) => AddEventBloc(
+            NotificationService(),
+            event: event ??
+                Event.optional(
+                  name: "",
+                  timeStamp: getCombinedDate(
+                    dateWithYear: BlocProvider.of<CalendarBloc>(context)
+                        .state
+                        .currentDateTime,
+                    dateWithTime: DateTime.now(),
+                  ),
+                ),
+          ),
+          child: const AddEventBottomSheet(),
+        );
+      },
+    );
   }
 }
 
 class EventWidget extends StatelessWidget {
-  const EventWidget(
-      {super.key,
-      required this.name,
-      required this.time,
-      required this.isChecked,
-      required this.onChecked});
+  const EventWidget({
+    super.key,
+    required this.name,
+    required this.time,
+    required this.isChecked,
+    required this.onChecked,
+  });
 
   final String name;
   final DateTime time;

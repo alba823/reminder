@@ -10,16 +10,18 @@ final class AddEventState {
 
   String get name => event.name;
 
-  AddEventState(
-      {Event? event,
-      ValidationState? validationState})
-      : event = event ?? Event.optional(name: ""),
+  AddEventState({
+    Event? event,
+    ValidationState? validationState,
+  })  : event = event ?? Event.optional(name: ""),
         validationState = validationState ?? ValidationState.idle;
 
-  AddEventState copyWith(
-          {Event? event,
-          ValidationState? validationState}) =>
+  AddEventState copyWith({
+    Event? event,
+    ValidationState? validationState,
+  }) =>
       AddEventState(
-          event: event ?? this.event,
-          validationState: validationState ?? this.validationState);
+        event: event ?? this.event,
+        validationState: validationState ?? this.validationState,
+      );
 }

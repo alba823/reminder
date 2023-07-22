@@ -4,10 +4,11 @@ import 'package:reminder/bloc/theme/theme_cubit.dart';
 import 'package:reminder/utils/values/theme_values.dart';
 
 class CustomizedCheckBox extends StatelessWidget {
-  const CustomizedCheckBox(
-      {super.key,
-      required this.isChecked,
-      required this.onChecked});
+  const CustomizedCheckBox({
+    super.key,
+    required this.isChecked,
+    required this.onChecked,
+  });
 
   final bool isChecked;
   final Function(bool) onChecked;

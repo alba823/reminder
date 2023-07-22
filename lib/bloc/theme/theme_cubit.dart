@@ -5,7 +5,10 @@ import 'package:reminder/data/local_storage/local_storage_service.dart';
 part 'theme_state.dart';
 
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit({required LocalStorageService localStorageService}) : _localStorageService = localStorageService, super(ThemeState.dark);
+  ThemeCubit({
+    required LocalStorageService localStorageService,
+  })  : _localStorageService = localStorageService,
+        super(ThemeState.dark);
 
   final LocalStorageService _localStorageService;
 
@@ -24,5 +27,5 @@ class ThemeCubit extends Cubit<ThemeState> {
 }
 
 extension Theme on ThemeData {
-  bool isDarkTheme () => this == ThemeData.dark();
+  bool isDarkTheme() => this == ThemeData.dark();
 }

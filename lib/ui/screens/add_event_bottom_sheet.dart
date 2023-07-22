@@ -21,20 +21,18 @@ class AddEventBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormFieldState>();
     final buttonBackgroundColor =
-    BlocProvider.of<ThemeCubit>(context).isDarkTheme()
-        ? darkThemeButtonBackgroundColor
-        : lightThemeButtonBackgroundColor;
+        BlocProvider.of<ThemeCubit>(context).isDarkTheme()
+            ? darkThemeButtonBackgroundColor
+            : lightThemeButtonBackgroundColor;
 
-    return BlocConsumer<AddEventBloc, AddEventState>(builder: (context, state) {
-      return Wrap(
-        alignment: WrapAlignment.center,
-        children: [
-          Padding(
+    return BlocConsumer<AddEventBloc, AddEventState>(
+      builder: (context, state) {
+        return Wrap(
+          alignment: WrapAlignment.center,
+          children: [
+            Padding(
               padding: EdgeInsets.only(
-                  top: 24, bottom: MediaQuery
-                  .of(context)
-                  .viewInsets
-                  .bottom),
+                  top: 24, bottom: MediaQuery.of(context).viewInsets.bottom),
               child: Column(
                 children: [
                   Padding(
@@ -42,15 +40,18 @@ class AddEventBottomSheet extends StatelessWidget {
                     child: TextFormField(
                       key: formKey,
                       initialValue: state.name.isEmpty ? null : state.name,
-                      validator: (value) => _validateName(value, AppLocalizations.of(context)!.requiredFieldIsMissingText),
+                      validator: (value) => _validateName(
+                        value,
+                        AppLocalizations.of(context)!
+                            .requiredFieldIsMissingText,
+                      ),
                       scrollPadding: EdgeInsets.only(
-                          bottom: MediaQuery
-                              .of(context)
-                              .viewInsets
-                              .bottom),
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
                       decoration: InputDecoration(
-                          border: const UnderlineInputBorder(),
-                          hintText: AppLocalizations.of(context)!.eventNameFormHintText),
+                        border: const UnderlineInputBorder(),
+                        hintText:
+                            AppLocalizations.of(context)!.eventNameFormHintText,
+                      ),
                       onChanged: (newName) {
                         BlocProvider.of<AddEventBloc>(context)
                             .add(NameChangedEvent(newName));
@@ -61,17 +62,20 @@ class AddEventBottomSheet extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 24, right: 24),
                     child: _getRowItem(
-                        hint: AppLocalizations.of(context)!.dateHintText,
-                        value: state.dateTime.toMonthDayYear(),
-                        onPressed: () {
-                          _showDateTimePicker(
-                              context,
-                              CupertinoDatePickerMode.date,
-                              state.dateTime, (newDateTime) {
+                      hint: AppLocalizations.of(context)!.dateHintText,
+                      value: state.dateTime.toMonthDayYear(),
+                      onPressed: () {
+                        _showDateTimePicker(
+                          context,
+                          CupertinoDatePickerMode.date,
+                          state.dateTime,
+                          (newDateTime) {
                             BlocProvider.of<AddEventBloc>(context)
                                 .add(DateChangedEvent(newDateTime));
-                          });
-                        }),
+                          },
+                        );
+                      },
+                    ),
                   ),
                   SizedBox(height: spacerHeight),
                   Padding(
@@ -79,25 +83,28 @@ class AddEventBottomSheet extends StatelessWidget {
                     child: _getRowItem(
                       hint: AppLocalizations.of(context)!.timeHintText,
                       value: state.dateTime.toTime(),
-                      onPressed: () =>
-                          _showDateTimePicker(
-                              context, CupertinoDatePickerMode.time,
-                              state.dateTime,
-                                  (newDateTime) {
-                                BlocProvider.of<AddEventBloc>(context)
-                                    .add(TimeChangedEvent(newDateTime));
-                              }),
+                      onPressed: () => _showDateTimePicker(
+                        context,
+                        CupertinoDatePickerMode.time,
+                        state.dateTime,
+                        (newDateTime) {
+                          BlocProvider.of<AddEventBloc>(context)
+                              .add(TimeChangedEvent(newDateTime));
+                        },
+                      ),
                     ),
                   ),
                   SizedBox(height: spacerHeight),
                   Padding(
                     padding: const EdgeInsets.only(left: 24, right: 12),
                     child: _getCheckBoxRowItem(
-                        hint: AppLocalizations.of(context)!.showNotificationHintText,
-                        value: state.event.shouldShowNotification,
-                        onPressed: (newValue) =>
-                            BlocProvider.of<AddEventBloc>(context).add(
-                                ShouldShowNotificationChangedEvent(newValue))),
+                      hint: AppLocalizations.of(context)!
+                          .showNotificationHintText,
+                      value: state.event.shouldShowNotification,
+                      onPressed: (newValue) =>
+                          BlocProvider.of<AddEventBloc>(context).add(
+                              ShouldShowNotificationChangedEvent(newValue)),
+                    ),
                   ),
                   CustomizedOutlinedButton(
                     onPressed: () {
@@ -109,15 +116,18 @@ class AddEventBottomSheet extends StatelessWidget {
                   ),
                   SizedBox(height: spacerHeight)
                 ],
-              ))
-        ],
-      );
-    }, listener: (context, state) {
-      if (state.validationState == ValidationState.success) {
-        BlocProvider.of<CalendarBloc>(context).add(AddEvent(state.event));
-        Navigator.pop(context);
-      }
-    });
+              ),
+            ),
+          ],
+        );
+      },
+      listener: (context, state) {
+        if (state.validationState == ValidationState.success) {
+          BlocProvider.of<CalendarBloc>(context).add(AddEvent(state.event));
+          Navigator.pop(context);
+        }
+      },
+    );
   }
 
   String? _validateName(String? value, String errorMessage) {
@@ -127,36 +137,61 @@ class AddEventBottomSheet extends StatelessWidget {
     return null;
   }
 
-  void _showDateTimePicker(BuildContext context, CupertinoDatePickerMode mode,
-      DateTime? initialTime, OnDateTimeChanged onChanged) {
+  void _showDateTimePicker(
+    BuildContext context,
+    CupertinoDatePickerMode mode,
+    DateTime? initialTime,
+    OnDateTimeChanged onChanged,
+  ) {
     showModalBottomSheet(
-        context: context,
-        builder: (_) =>
-            CupertinoDatePicker(
-                initialDateTime: initialTime,
-                mode: mode,
-                onDateTimeChanged: onChanged));
+      context: context,
+      builder: (_) => CupertinoDatePicker(
+        initialDateTime: initialTime,
+        mode: mode,
+        onDateTimeChanged: onChanged,
+      ),
+    );
   }
 
-  Widget _getRowItem({required String hint,
+  Widget _getRowItem({
+    required String hint,
     required String value,
-    required VoidCallback onPressed}) {
+    required VoidCallback onPressed,
+  }) {
     return GestureDetector(
-        onTap: onPressed,
-        child:
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text(hint, style: const TextStyle(fontSize: 16)),
-          Text(value, style: const TextStyle(fontSize: 16))
-        ]));
+      onTap: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            hint,
+            style: const TextStyle(fontSize: 16),
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _getCheckBoxRowItem({required String hint,
-    required bool value,
-    required Function(bool) onPressed}) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text(hint, style: const TextStyle(fontSize: 16)),
-      CustomizedCheckBox(
-          isChecked: value, onChecked: (newValue) => onPressed(newValue))
-    ]);
+  Widget _getCheckBoxRowItem(
+      {required String hint,
+      required bool value,
+      required Function(bool) onPressed}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          hint,
+          style: const TextStyle(fontSize: 16),
+        ),
+        CustomizedCheckBox(
+          isChecked: value,
+          onChecked: (newValue) => onPressed(newValue),
+        ),
+      ],
+    );
   }
 }

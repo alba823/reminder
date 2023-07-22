@@ -8,8 +8,10 @@ part 'add_event_event.dart';
 part 'add_event_state.dart';
 
 class AddEventBloc extends Bloc<AddEventEvent, AddEventState> {
-  AddEventBloc(this.notificationService, {Event? event})
-      : super(AddEventState(event: event)) {
+  AddEventBloc(
+    this.notificationService, {
+    Event? event,
+  }) : super(AddEventState(event: event)) {
     on<DateChangedEvent>(_onDateChanged);
     on<TimeChangedEvent>(_onTimeChanged);
     on<NameChangedEvent>(_onNameChangedEvent);
@@ -20,29 +22,58 @@ class AddEventBloc extends Bloc<AddEventEvent, AddEventState> {
 
   final NotificationService notificationService;
 
-  void _onDateChanged(DateChangedEvent event, Emitter<AddEventState> emitter) {
+  void _onDateChanged(
+    DateChangedEvent event,
+    Emitter<AddEventState> emitter,
+  ) {
     final updatedTime = getCombinedDate(
-        dateWithYear: event.dateTime, dateWithTime: state.dateTime);
+      dateWithYear: event.dateTime,
+      dateWithTime: state.dateTime,
+    );
     emitter(
-        state.copyWith(event: state.event.copyWith(timeStamp: updatedTime)));
+      state.copyWith(
+        event: state.event.copyWith(timeStamp: updatedTime),
+      ),
+    );
   }
 
-  void _onTimeChanged(TimeChangedEvent event, Emitter<AddEventState> emitter) {
+  void _onTimeChanged(
+    TimeChangedEvent event,
+    Emitter<AddEventState> emitter,
+  ) {
     final updatedTime = getCombinedDate(
-        dateWithYear: state.dateTime, dateWithTime: event.dateTime);
+      dateWithYear: state.dateTime,
+      dateWithTime: event.dateTime,
+    );
     emitter(
-        state.copyWith(event: state.event.copyWith(timeStamp: updatedTime)));
+      state.copyWith(
+        event: state.event.copyWith(timeStamp: updatedTime),
+      ),
+    );
   }
 
   void _onNameChangedEvent(
-      NameChangedEvent event, Emitter<AddEventState> emitter) {
-    emitter(state.copyWith(event: state.event.copyWith(name: event.name)));
+    NameChangedEvent event,
+    Emitter<AddEventState> emitter,
+  ) {
+    emitter(
+      state.copyWith(
+        event: state.event.copyWith(name: event.name),
+      ),
+    );
   }
 
-  void _onSaveEvent(_, Emitter<AddEventState> emitter) async {
+  void _onSaveEvent(
+    _,
+    Emitter<AddEventState> emitter,
+  ) async {
     if (state.name.isEmpty) {
-      emitter(state.copyWith(
-          event: state.event, validationState: ValidationState.empty));
+      emitter(
+        state.copyWith(
+          event: state.event,
+          validationState: ValidationState.empty,
+        ),
+      );
     } else {
       await _setOrRemoveNotificationIfNeeded();
       emitter(state.copyWith(
@@ -54,22 +85,28 @@ class AddEventBloc extends Bloc<AddEventEvent, AddEventState> {
   }
 
   void _onShouldShowNotificationChangedEvent(
-      ShouldShowNotificationChangedEvent event,
-      Emitter<AddEventState> emitter) {
-    emitter(state.copyWith(
-        event: state.event.copyWith(shouldShowNotification: event.newValue)));
+    ShouldShowNotificationChangedEvent event,
+    Emitter<AddEventState> emitter,
+  ) {
+    emitter(
+      state.copyWith(
+        event: state.event.copyWith(shouldShowNotification: event.newValue),
+      ),
+    );
   }
 
   Future<void> _setOrRemoveNotificationIfNeeded() async {
     final event = state.event;
     if (event.shouldShowNotification) {
       await notificationService.scheduleNotification(
-          notificationId: event.notificationId,
-          text: event.name,
-          dateTime: event.timeStamp);
+        notificationId: event.notificationId,
+        text: event.name,
+        dateTime: event.timeStamp,
+      );
     } else {
       await notificationService.removeNotification(
-          notificationId: event.notificationId);
+        notificationId: event.notificationId,
+      );
     }
   }
 }

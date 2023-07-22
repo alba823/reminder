@@ -10,17 +10,20 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeState>(builder: (context, state) {
-      final themeMode = state.isDarkTheme() ? ThemeMode.dark : ThemeMode.light;
-      final textColor = state.isDarkTheme() ? lightThemeColor : darkThemeColor;
-      final buttonBackgroundColor = state.isDarkTheme()
-          ? darkThemeButtonBackgroundColor
-          : lightThemeButtonBackgroundColor;
-      final backgroundColor =
-          state.isDarkTheme() ? darkThemeColor : lightThemeColor;
-      final icon = state.isDarkTheme() ? Icons.dark_mode : Icons.light_mode;
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      builder: (context, state) {
+        final themeMode =
+            state.isDarkTheme() ? ThemeMode.dark : ThemeMode.light;
+        final textColor =
+            state.isDarkTheme() ? lightThemeColor : darkThemeColor;
+        final buttonBackgroundColor = state.isDarkTheme()
+            ? darkThemeButtonBackgroundColor
+            : lightThemeButtonBackgroundColor;
+        final backgroundColor =
+            state.isDarkTheme() ? darkThemeColor : lightThemeColor;
+        final icon = state.isDarkTheme() ? Icons.dark_mode : Icons.light_mode;
 
-      return MaterialApp(
+        return MaterialApp(
           title: 'Flutter Demo',
           theme: lightTheme,
           darkTheme: darkTheme,
@@ -32,8 +35,9 @@ class MainScreen extends StatelessWidget {
             buttonBackgroundColor: buttonBackgroundColor,
             backgroundColor: backgroundColor,
             icon: icon,
-          )
-      );
-    });
+          ),
+        );
+      },
+    );
   }
 }

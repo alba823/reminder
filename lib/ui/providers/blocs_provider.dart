@@ -14,12 +14,12 @@ class BlocsProviderWidget extends StatelessWidget {
     final repository = context.read<Repository>();
     final localStorageService = context.read<LocalStorageService>();
     return BlocProvider<ThemeCubit>(
-        create: (_) => ThemeCubit(localStorageService: localStorageService)
-          ..setPreviousTheme(),
-        child: BlocProvider<CalendarBloc>(
-          create: (buildContext) =>
-              CalendarBloc(repository)..add(GetAllEvents()),
-          child: const MainScreen(),
-        ));
+      create: (_) => ThemeCubit(localStorageService: localStorageService)
+        ..setPreviousTheme(),
+      child: BlocProvider<CalendarBloc>(
+        create: (buildContext) => CalendarBloc(repository)..add(GetAllEvents()),
+        child: const MainScreen(),
+      ),
+    );
   }
 }

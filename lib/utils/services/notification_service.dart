@@ -53,10 +53,15 @@ class NotificationServiceImpl implements NotificationService {
       await removeNotification(notificationId: notificationId);
     }
 
-    await _flutterLocalNotificationsPlugin.zonedSchedule(notificationId,
-        _notificationTitle, text, localDateTime, _notificationDetails,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+      notificationId,
+      _notificationTitle,
+      text,
+      localDateTime,
+      _notificationDetails,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
   }
 
   @override
@@ -68,7 +73,8 @@ class NotificationServiceImpl implements NotificationService {
   Future<void> init() async {
     tz.initializeTimeZones();
 
-    if (await getUpdatedPermissionState() == NotificationPermissionState.denied) return;
+    if (await getUpdatedPermissionState() == NotificationPermissionState.denied)
+      return;
 
     await _flutterLocalNotificationsPlugin
         .initialize(NotificationService.initializationSettings);

@@ -14,41 +14,47 @@ class CalendarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CalendarBloc, CalendarState>(
-        builder: (buildContext, state) {
-      final themePrimaryColor =
-          BlocProvider.of<ThemeCubit>(context).isDarkTheme()
-              ? lightThemeColor
-              : darkThemeColor;
-      final themeBackgroundColor =
-          BlocProvider.of<ThemeCubit>(context).isDarkTheme()
-              ? darkThemeColor
-              : lightThemeColor;
-      return TableCalendar<Event>(
-        focusedDay: state.currentDateTime,
-        firstDay: kFirstDay,
-        lastDay: kLastDay,
-        headerStyle: const HeaderStyle(titleCentered: true),
-        availableCalendarFormats: const {CalendarFormat.month: ''},
-        calendarStyle: CalendarStyle(
+      builder: (buildContext, state) {
+        final themePrimaryColor =
+            BlocProvider.of<ThemeCubit>(context).isDarkTheme()
+                ? lightThemeColor
+                : darkThemeColor;
+        final themeBackgroundColor =
+            BlocProvider.of<ThemeCubit>(context).isDarkTheme()
+                ? darkThemeColor
+                : lightThemeColor;
+
+        return TableCalendar<Event>(
+          focusedDay: state.currentDateTime,
+          firstDay: kFirstDay,
+          lastDay: kLastDay,
+          headerStyle: const HeaderStyle(titleCentered: true),
+          availableCalendarFormats: const {CalendarFormat.month: ''},
+          calendarStyle: CalendarStyle(
             markersAlignment: Alignment.topRight,
             todayDecoration: BoxDecoration(
-                border: Border.all(color: themePrimaryColor),
-                shape: BoxShape.circle),
+              border: Border.all(color: themePrimaryColor),
+              shape: BoxShape.circle,
+            ),
             todayTextStyle: TextStyle(color: themePrimaryColor),
-            selectedDecoration:
-                BoxDecoration(color: themePrimaryColor, shape: BoxShape.circle),
-            selectedTextStyle: TextStyle(color: themeBackgroundColor)),
-        startingDayOfWeek: StartingDayOfWeek.monday,
-        calendarBuilders: CalendarBuilders(markerBuilder: _getMarkerBuilder),
-        eventLoader: (dateTime) =>
-            state.getEventsForDate(dateTime: dateTime),
-        selectedDayPredicate: (d) =>
-            d.toYearDay() == state.currentDateTime.toYearDay(),
-        onDaySelected: (dateTime, _) {
-          BlocProvider.of<CalendarBloc>(context).add(GetEventsForDate(dateTime));
-        }
-      );
-    });
+            selectedDecoration: BoxDecoration(
+              color: themePrimaryColor,
+              shape: BoxShape.circle,
+            ),
+            selectedTextStyle: TextStyle(color: themeBackgroundColor),
+          ),
+          startingDayOfWeek: StartingDayOfWeek.monday,
+          calendarBuilders: CalendarBuilders(markerBuilder: _getMarkerBuilder),
+          eventLoader: (dateTime) => state.getEventsForDate(dateTime: dateTime),
+          selectedDayPredicate: (d) =>
+              d.toYearDay() == state.currentDateTime.toYearDay(),
+          onDaySelected: (dateTime, _) {
+            BlocProvider.of<CalendarBloc>(context)
+                .add(GetEventsForDate(dateTime));
+          },
+        );
+      },
+    );
   }
 
   final _markerSize = 20.0;

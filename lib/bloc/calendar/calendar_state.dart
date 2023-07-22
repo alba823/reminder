@@ -6,22 +6,24 @@ class CalendarState extends Equatable {
 
   final NotificationPermissionState permissionState;
 
-  CalendarState(
-      {List<Event>? events,
-      DateTime? currentDateTime,
-      NotificationPermissionState? permissionState})
-      : events = events ?? List.empty(),
+  CalendarState({
+    List<Event>? events,
+    DateTime? currentDateTime,
+    NotificationPermissionState? permissionState,
+  })  : events = events ?? List.empty(),
         currentDateTime = currentDateTime ?? DateTime.now(),
         permissionState = permissionState ?? NotificationPermissionState.idle;
 
-  CalendarState copyWith(
-          {List<Event>? events,
-          DateTime? currentDateTime,
-          NotificationPermissionState? permissionState}) =>
+  CalendarState copyWith({
+    List<Event>? events,
+    DateTime? currentDateTime,
+    NotificationPermissionState? permissionState,
+  }) =>
       CalendarState(
-          events: events ?? this.events,
-          currentDateTime: currentDateTime ?? this.currentDateTime,
-          permissionState: permissionState ?? this.permissionState);
+        events: events ?? this.events,
+        currentDateTime: currentDateTime ?? this.currentDateTime,
+        permissionState: permissionState ?? this.permissionState,
+      );
 
   List<Event> getEventsForDate({DateTime? dateTime}) => events
       .where((e) => dateTime == null
